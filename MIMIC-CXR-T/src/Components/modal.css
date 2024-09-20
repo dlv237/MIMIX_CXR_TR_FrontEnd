@@ -1,0 +1,48 @@
+.modal-header {
+    background-color: #f7f7f7;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sentence-font {
+    color: black;
+    font-size: 16px;
+}
+
+
+.card-header {
+    background-color: rgb(204, 210, 238);
+    color: #000000;
+    font-size: 20px;
+}
+
+.examples-text {
+    font-size: 14px; 
+  }
+
+  
+.card-accordion{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.title-correcctions {
+    display: flex;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.edit-frase {
+    margin-top: 8px;
+    margin-bottom: 30px;
+    background-color: #f7f7f7;
+    padding: 10px; 
+    border-radius: 5px; 
+  }
+  
+.container-header{
+    width: 100%;
+}

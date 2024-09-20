@@ -1,0 +1,22 @@
+services:
+  mimic_front-prod:
+    build:
+      context: ./    
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+    profiles:
+      - prod
+
+  mimic_front-dev:
+    build:
+      context: ./    
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+    profiles:
+      - dev

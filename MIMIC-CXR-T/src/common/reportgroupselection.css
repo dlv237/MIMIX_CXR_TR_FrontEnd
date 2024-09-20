@@ -1,0 +1,7 @@
+.custom-table {
+    margin-top: 20px; /* Ajusta el margen según tus necesidades */
+  }
+  
+  .custom-table th {
+    text-align: center; /* Centra el texto en las celdas de encabezado */
+  }

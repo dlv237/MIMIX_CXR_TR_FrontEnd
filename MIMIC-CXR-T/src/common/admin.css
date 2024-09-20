@@ -1,0 +1,13 @@
+.container-admin {
+  margin-top: 100px;
+}
+
+.table-display-container{
+  max-height: '50px';
+  overflow-y: 'auto';
+}
+
+.main-col-container{
+  display: flex;
+  justify-content: center;
+}

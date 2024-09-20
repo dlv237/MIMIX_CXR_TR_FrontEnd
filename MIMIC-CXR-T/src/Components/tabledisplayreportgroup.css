@@ -1,0 +1,15 @@
+/* TableDisplayReports.css */
+
+/* Establecer un ancho fijo para las celdas de la primera columna */
+th:first-child,
+td:first-child {
+  width: 45%; /* Puedes ajustar este valor según tus necesidades */
+  text-align: left;
+}
+
+/* Asegurar que las celdas del cuerpo tengan el mismo ancho que las celdas del encabezado */
+th,td {
+  width: 45%; /* Puedes ajustar este valor según tus necesidades */
+  text-align: left;
+}
+

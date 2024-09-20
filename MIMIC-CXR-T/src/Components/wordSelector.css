@@ -1,0 +1,61 @@
+/* WordSelector.css */
+.word-selector-button {
+  border: 1px solid rgb(190, 188, 188); 
+  border-radius: 3px;
+  padding: 2px 5px;
+  margin: 2px;
+  line-height: 1;
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s;
+}
+
+.word-selector-button-selected {
+  background-color: lightblue;
+  color: white;
+}
+
+.word-selector-button-selected.primary {
+background-color: rgb(79, 90, 245);
+}
+
+.word-selector-button-selected.secondary {
+background-color: rgb(73, 64, 64);
+}
+
+.word-selector-button-selected.success {
+background-color: rgb(85, 138, 85);
+}
+
+.word-selector-button-selected.danger {
+background-color: rgb(192, 82, 82);
+}
+
+.word-selector-button-selected.warning {
+background-color: rgb(228, 177, 66);
+}
+
+.word-selector-button.primary:hover {
+background-color: rgb(129, 136, 244);
+color: black;
+}
+
+.word-selector-button.secondary:hover {
+background-color: rgb(118, 118, 118);
+color: black;
+}
+
+.word-selector-button.success:hover {
+background-color: rgb(194, 219, 194);
+color: black;
+}
+
+.word-selector-button.danger:hover {
+background-color: rgb(226, 141, 141);
+color: black;
+}
+
+.word-selector-button.warning:hover {
+background-color: rgb(255, 213, 122);
+color: black;
+}
