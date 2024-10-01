@@ -6,18 +6,18 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { Container, Col, Row, Alert } from 'react-bootstrap';
 import { getReportGroupReports, getUserTranslatedSentencesByReportGroup, 
-  updateUserReportGroupProgress, checkIsReportCompleted } from '../utils/api';
+  updateUserReportGroupProgress, getIsReportCompleted } from '../utils/api';
 
 function Translator() {
   const { token } = useContext(AuthContext);
-  const { groupId } = useParams(); //aqui iria el reportprogress si va en url
+  const { groupId } = useParams();
   const [reports, setReports] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progressTranslatedSentences, setProgressTranslatedSentences] = useState(0);
   const [reviewedTranslatedSentences, setReviewedTranslatedSentences] = useState(0);
   const [totalTranslatedSentences, setTotalTranslatedSentences] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
-  const dismissDelay = 1400; // 2000 milliseconds = 2 seconds
+  const dismissDelay = 1400;
 
   const calculateProgressTranslatedSentences = () => {
     return totalTranslatedSentences ? (reviewedTranslatedSentences / totalTranslatedSentences) * 100 : 0;
@@ -60,7 +60,7 @@ function Translator() {
         const reportsResponse = await getReportGroupReports(groupId, token);
         setReports(reportsResponse);
         fetchUserTranslatedSentences(groupId);
-    
+        console.log("reportsResponse: ", reportsResponse);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -96,7 +96,7 @@ function Translator() {
   const goToNextReport = async () => {
     try {
       const nextIndex = (currentIndex + 1) % reports.length;
-      const isCurrentReportCompleted = await checkIsReportCompleted(reports[currentIndex].report.reportId, token);
+      const isCurrentReportCompleted = await getIsReportCompleted(reports[currentIndex].report.reportId, token);
       if (isCurrentReportCompleted.completed) {
         setCurrentIndex(nextIndex);
       } else {
@@ -145,9 +145,8 @@ function Translator() {
                 groupId={groupId}
                 report={reports[currentIndex]}
                 triggerProgressTranslatedSentencesRecalculation={triggerProgressTranslatedSentencesRecalculation}
-                reports={reports}
                 currentIndex={currentIndex}
-                checkIsReportCompleted={checkIsReportCompleted}
+                getIsReportCompleted={getIsReportCompleted}
                 goToNextReport={goToNextReport}
                 goToPreviousReport={goToPreviousReport}
                 />

@@ -9,16 +9,18 @@ import ModalSuggestions from './ModalSuggestionCorrecction/ModalSuggestionCorrec
 import { createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, 
   deleteUserCorrectionsTranslatedSentence, deleteSuggestion, getPreviousUserSuggestion,
+  getReportGroupReportsLength
   } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 
-function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, reports, currentIndex, checkIsReportCompleted, goToNextReport, goToPreviousReport}) {
+function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, currentIndex, checkAreReportsCompleted, goToNextReport, goToPreviousReport}) {
   const [translatedSentencesState, setTranslatedSentencesState] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTranslatedSentenceId, setSelectedTranslatedSentenceId] = useState(null);
   const [isSwitchChecked, setIsSwitchChecked] = useState(true);
   const [progressReports, setProgressReports] = useState(0);
   const [completedReports, setCompletedReports] = useState(0);
+  const [reportsLenght, setReportsLenght] = useState(0);
   const { token } = useContext(AuthContext);
 
   const [uniqueTranslatedSentenceIds, setUniqueTranslatedSentenceIds] = useState(new Set());
@@ -30,20 +32,13 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   const [renderCounter, setRenderCounter] = useState(0);
 
   const handleModalSave = async () => {
-    console.log('Modal saved. Updating cell content...');
+
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
-    console.log("seteo que frase esta mala: estado false");
-    //selected times: true, selectedcheck : false
-    console.log("translatedSentences.id: ",selectedTranslatedSentenceId);
     if (selectedTranslatedSentenceId in translatedSentencesState) {
-      console.log("coloco rojo dela cruz")
-      const updateUTS = await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
-      console.log("updateUserTranslatedSentence frase:", updateUTS);
-    
+      await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
     } 
     else {
-      const createUTS = await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
-      console.log("createUserTranslatedSentence frase:", createUTS);
+      await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
      
     }
      //setSelectedTranslatedSentenceId(selectedTranslatedSentenceId);
@@ -51,8 +46,8 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     triggerProgressTranslatedSentencesRecalculation();
 
     calculateCompletedReports().then(result => {
-          setCompletedReports(result.completedCount);
-          });
+      setCompletedReports(result.completedCount);
+    });
 
     const newProgressByReports = calculateProgressByReports();
     setProgressReports(newProgressByReports);  
@@ -84,12 +79,9 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: null }));
       }
     } catch (error) {
-      // Manejar el error 404 aquí
+
       if (error.response && error.response.status === 404) {
-        console.log('No se encontró la sugerencia anterior. Cerrando modal sin guardar.');
-        // Ejecutar la misma lógica que en el bloque else
-        console.log('Modal closed without saving. Cell content restored.');
-        console.log("translatedSentencesState antes: ", translatedSentencesState);
+
         await updateUserTranslatedSentence(selectedTranslatedSentenceId, null,false, false, token);
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: null }));
         
@@ -102,7 +94,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   
 
   const calculateProgressByReports = () => {
-    return reports.length ? (completedReports / reports.length) * 100 : 0;
+    return reportsLenght ? (completedReports / reportsLenght) * 100 : 0;
   };
   
   const updateProgressForCurrentReport = () => {
@@ -111,24 +103,12 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   };
 
   const calculateCompletedReports = async () => {
-    const reportsCompleted = reports.map((report) => ({
-      reportId: report.report.reportId,
-      completed: false
-    }));
-    for (const report of reportsCompleted) {
-      try {
-        const isReportCompleted = await checkIsReportCompleted(report.reportId, token);
-        if (isReportCompleted.completed) {
-          report.completed = true;
-        }
-      } catch (error) {
-        console.error('Error checking report completion:', error);
-      }
-    }
-    const completedCount = reportsCompleted.filter(report => report.completed).length;
+    const reportsCompletedResponse = await checkAreReportsCompleted();
+    const completedCount = reportsCompletedResponse.completedCount;
+    const reportsCompleted = reportsCompletedResponse.reportsCompleted;
     return {
       reportsCompleted,
-      completedCount
+      completedCount,
     };
   };  
 
@@ -163,11 +143,23 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     };
 
     fetchData();
-  }, [completedReports, reports]);
+  }, [completedReports]);
 
   useEffect(() => {
     console.log("translatedSentencesState después del cambio: ", translatedSentencesState);
+  }, [translatedSentencesState]);
+
+  useEffect(() => {
+    const fetchReportsLenght = async () => {
+      try {
+        const response = await getReportGroupReportsLength(groupId, token);
+        setReportsLenght(response);
+      } catch (error) {
+        console.error('Error fetching report groups:', error);
+      }
+    };
     
+    fetchReportsLenght();
   }, [translatedSentencesState]); // Agregar renderCounter como dependencia
   
 
@@ -181,6 +173,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
       const updatedState = {};
       Object.keys(report.report.translated_sentences).forEach((type) => {
         report.report.translated_sentences[type].forEach((translatedsentence) => {
+
           loadUserTranslatedPhrase(translatedsentence);
           console.log("loadusersugg translatedsentence: ",translatedsentence);
           loadUserSuggestion(translatedsentence);
@@ -276,7 +269,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     } 
     
     triggerProgressTranslatedSentencesRecalculation();
-    updateProgressForCurrentReport(); // Update the totalReviewedSentences
+    updateProgressForCurrentReport();
   };
 
   useEffect(() => {
@@ -285,7 +278,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
       [report.reportId]: uniqueTranslatedSentenceIds.size,
     }));
   
-    updateProgressForCurrentReport(); // Initial update when report is loaded
+    updateProgressForCurrentReport();
   }, [uniqueTranslatedSentenceIds, report]);
 
 
@@ -386,7 +379,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
             >
             <ProgressBar striped animated className="reports-progress-bar" 
               now={progressReports} 
-              label={`(${completedReports}/${reports.length})  `+`${Math.round(progressReports)}%`} 
+              label={`(${completedReports}/${reportsLenght})  `+`${Math.round(progressReports)}%`} 
               variant={
                 Math.round(progressReports) <= 33 ? "danger" :
                 Math.round(progressReports) < 99 ? "warning" :
@@ -401,14 +394,14 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
             <Button
               variant="primary"
               onClick={goToPreviousReport}
-              disabled={reports.length === 0 || currentIndex === 0}
+              disabled={reportsLenght === 0 || currentIndex === 0}
             >
               Reporte anterior
             </Button>
             <Button
               variant="primary"
               onClick={goToNextReport}
-              disabled={reports.length === 0 || currentIndex === reports.length - 1}
+              disabled={reportsLenght === 0 || currentIndex === reportsLenght - 1}
             >
               Siguiente reporte
             </Button>
@@ -417,7 +410,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
 
         <Row>
           <Col>
-            <h3><Badge bg="secondary" className="badge-report" >ID Reporte: {report.reportId}</Badge> </h3>
+            <h3><Badge bg="secondary" className="badge-report" >ID Reporte: {currentIndex}</Badge> </h3>
           </Col>
         </Row>
         

@@ -3,7 +3,7 @@ import { Row, Button, Table, ProgressBar } from 'react-bootstrap';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { getReportGroupsByUser, getUserReportGroup } from '../utils/api';
+import { getReportGroupsByUser, getUserReportGroup, getReportGroupReports } from '../utils/api';
 
 import './reportgroupselection.css';
 
@@ -17,9 +17,16 @@ const ReportGroupSelection = () => {
 
   const navigate = useNavigate();
 
-  const handleSelectButtonClick = (groupId, reportProgress) => {
-    const reportProgressPercentage = Math.round(reportProgress);
-    navigate(`/translator/${groupId}`, { state: { reportProgressPercentage } });
+  const handleSelectButtonClick = async (groupId) => {
+    try {
+      const response = await getReportGroupReports(groupId, token);
+      if (response.length > 0) {
+        const firstReportId = response[0].report.reportId; // Obtener el primer reporte del grupo
+        navigate(`/translator/${groupId}/report/${firstReportId}`); // Navegar a la ruta con groupId y reportId
+      }
+    } catch (error) {
+      console.error('Error fetching reports for group:', error);
+    }
   };
 
   const viewTableUserDisplayReportGroup = (groupId) => {
@@ -59,7 +66,6 @@ const ReportGroupSelection = () => {
       const promises = reportGroups.map((group) =>
         fetchUserReportGroupProgress(group.id)
       );
-
       await Promise.all(promises);
     };
 

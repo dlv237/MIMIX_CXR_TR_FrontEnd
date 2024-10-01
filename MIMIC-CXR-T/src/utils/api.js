@@ -36,6 +36,20 @@ export async function getReportGroupReports(groupId, token) {
   return response.data;
 }
 
+export async function getReportFromGroupReports(groupId, reportId, token) {
+  const response = await axios.get(
+  `${import.meta.env.VITE_BACKEND_URL}/userreportgroups/report/${groupId}/${reportId}`, config(token),
+  );
+  return response.data;
+}
+
+export async function getReportGroupReportsLength(groupId, token) {
+  const response = await axios.get(
+  `${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/count/${groupId}`, config(token),
+  );
+  return response.data;
+}
+
 export async function getPreviousUserSuggestion(translatedsentenceId, token) {
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/suggestions/${translatedsentenceId}`,  config(token),
   );
@@ -242,7 +256,7 @@ export async function createReportBatch(fileContent, token){
   return response.data;
 }
 
-export async function checkIsReportCompleted(reportId, token){
+export async function getIsReportCompleted(reportId, token){
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/usertranslatedsentences/completed/${reportId}`, config(token),
   );
   return response.data;
@@ -251,5 +265,21 @@ export async function checkIsReportCompleted(reportId, token){
 export async function getReportById(reportId, token){
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reports/${reportId}`, config(token),
   );
+  return response.data;
+}
+
+export async function getReportGroupsLenghtByUser(token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/userreportgroups/count`, config(token),
+  );
+  return response.data;
+}
+
+export async function fetchCompletedReports(groupId, token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/completed/${groupId}`, config(token));
+  return response.data;
+}
+
+export async function fetchTotalTranslatedSentences(groupId, token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/translated/${groupId}`, config(token));
   return response.data;
 }

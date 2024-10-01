@@ -1,11 +1,11 @@
 import { useState, useContext, useEffect } from 'react';
-import { Table, Button, Col, Container, Row, ProgressBar, Alert, Spinner } from 'react-bootstrap';
+import { Table, Button, Col, Container, Row, Alert, Spinner } from 'react-bootstrap';
 import './tabledisplayreportgroup.css';
 import NavBarReportSelection from './NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { getReportGroupReports, getUserReportGroup, getReportById, getPreviousUserTranslatedSentence } from '../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
-import { checkIsReportCompleted } from '../utils/api';
+import { getIsReportCompleted } from '../utils/api';
 
 const TableUserDisplayReportGroup = () => {
   const { token } = useContext(AuthContext);
@@ -113,7 +113,7 @@ const TableUserDisplayReportGroup = () => {
       if (indexReport >0){
         const previousReportId = reports[indexReport-1].report.reportId;
         //console.log("previousReportId: ",previousReportId);
-        const isReportCompleted = await checkIsReportCompleted(previousReportId, token);
+        const isReportCompleted = await getIsReportCompleted(previousReportId, token);
         //console.log("isReportCompleted: ",isReportCompleted);
         if (!isReportCompleted.completed) {
           setShowAlert(true);
@@ -121,12 +121,12 @@ const TableUserDisplayReportGroup = () => {
         }
         else{
           setShowAlert(false);
-          navigate(`/translator/${groupId}`);
+          navigate(`/translator/${groupId}/report/${reportId-1}`);
         }
       }
       else{
         setShowAlert(false);
-        navigate(`/translator/${groupId}`);
+        navigate(`/translator/${groupId}/report/${reportId-1}`);
       }
     } catch (error) {
       console.error('Error checking report completion:', error);
