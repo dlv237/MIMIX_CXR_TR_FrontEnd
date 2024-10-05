@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from '../common/App';
 import Translator from '../common/Translator';
-import ReportTranslator from '../common/Translator2';
+import ReportTranslator from '../common/ReportTranslator';
 import ModalLogin from '../profile/ModalLogin';
 import Signup from '../profile/Signup';
 import ReportGroupSelection from '../common/ReportGroupSelection'; 
