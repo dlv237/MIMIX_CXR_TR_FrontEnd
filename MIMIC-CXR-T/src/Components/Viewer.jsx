@@ -31,18 +31,24 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   const [suggestionData, setSuggestionData] = useState({});
   const [renderCounter, setRenderCounter] = useState(0);
 
-  const handleModalSave = async () => {
+  const [isCrossedSentences, setIsCrossedSentences] = useState({});
+  const [sentencesSuggestions, setSentencesSuggestions] = useState({});
 
+  const handleModalSave = async (editedTranslatedSentence) => {
+
+    setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
+    setSentencesSuggestions(prev => ({ ...prev, [selectedTranslatedSentenceId]: editedTranslatedSentence }));
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
+
+    console.log("translatedSentencesState: ", translatedSentencesState[selectedTranslatedSentenceId]);
+
     if (selectedTranslatedSentenceId in translatedSentencesState) {
       await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
     } 
     else {
       await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
-     
     }
-     //setSelectedTranslatedSentenceId(selectedTranslatedSentenceId);
-    console.log("ahora se setea frase seleccioanda ");
+    
     triggerProgressTranslatedSentencesRecalculation();
 
     calculateCompletedReports().then(result => {
@@ -56,16 +62,14 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
 
   const handleCloseWithoutSave = async () => {
     try {
-      console.log("handleCloseWithoutSave");
-      console.log("selectedTranslatedSentenceId: ", selectedTranslatedSentenceId);
-  
+
       // Realizar la solicitud para verificar si hay una sugerencia anterior
       const response = await getPreviousUserSuggestion(selectedTranslatedSentenceId, token);
   
       if (response) {      
         console.log('Modal closed without saving. EXISTS PREVIOUS SUGGESTION.');
         
-        // Si hay una sugerencia anterior, actualizar la traducción a falsa
+        // Si hay una sugerencia anterior, actualizar la traducción a fals
         await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
         console.log('Modal closed without saving. EXISTS PREVIOUS SUGGESTION.');
@@ -146,7 +150,6 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   }, [completedReports]);
 
   useEffect(() => {
-    console.log("translatedSentencesState después del cambio: ", translatedSentencesState);
   }, [translatedSentencesState]);
 
   useEffect(() => {
@@ -188,10 +191,9 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   const loadUserTranslatedPhrase = async (translatedsentence) => {
       try {
         const response = await getPreviousUserTranslatedSentence(translatedsentence.id, token);
-         setUniqueTranslatedSentenceIds((prevIds) => new Set([...prevIds, translatedsentence.id]));
+        setUniqueTranslatedSentenceIds((prevIds) => new Set([...prevIds, translatedsentence.id]));
 
         if (response) {
-          console.log("getPreviousUserTranslatedSentence:", response);
           if (response.isSelectedCheck && response.state) 
             setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: true }));
           if (response.isSelectedTimes && !response.state) 
@@ -292,10 +294,10 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     
       const types = ["background", "findings", "impression"];
       return types.map((type) => {
-        // Filtra las oraciones vacías para este tipo
+        
         const nonEmptyOriginalSentences = originalSentences[type].filter((sentence) => sentence.text.trim() !== "");
         const nonEmptyTranslatedSentences = translatedSentences[type].filter((sentence) => sentence.text.trim() !== "");
-        // Si no hay oraciones no vacías, no renderiza nada para este tipo
+        
         if (nonEmptyOriginalSentences.length === 0 && nonEmptyTranslatedSentences.length === 0) {
           return null;
         }
@@ -322,7 +324,8 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
                       <p>{nonEmptyTranslatedSentences[index]?.text}</p>
                     ) : (
                       <>
-                        {isCrossed ? (
+                        {isCrossed || isCrossedSentences[translatedSentenceId] ?
+                           (
                           <p style={{ textDecoration: 'line-through', color: 'red' }}>
                             {nonEmptyTranslatedSentences[index]?.text || ''}
                           </p>
@@ -331,7 +334,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
                         )}
                         <br />
                         <p style={{ color: 'green' }}>
-                          {isCrossed && suggestionAvailable ? suggestionData[translatedSentenceId] : ''}
+                          {isCrossed && suggestionAvailable ? suggestionData[translatedSentenceId] : sentencesSuggestions[translatedSentenceId] || ''}
                         </p>
                       </>
                     )}

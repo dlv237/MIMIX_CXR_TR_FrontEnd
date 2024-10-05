@@ -189,7 +189,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
           })
         );
       }
-      onSave();
+      onSave(editedTranslatedSentence);
       onHide();
       console.log("selectedTranslatedSentenceId: modal, ", selectedTranslatedSentenceId)
       loadPreviousSuggestionData(selectedTranslatedSentenceId);
