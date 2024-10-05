@@ -445,7 +445,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           selectedTranslatedSentenceId={selectedTranslatedSentenceId} 
           onCloseWithoutSave={handleCloseWithoutSave}
           onSave={handleModalSave}
-          />
+        />
       </>
     );
   }

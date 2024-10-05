@@ -22,7 +22,7 @@ const ReportGroupSelection = () => {
       const response = await getReportGroupReports(groupId, token);
       if (response.length > 0) {
         const firstReportId = response[0].report.reportId; // Obtener el primer reporte del grupo
-        navigate(`/translator/${groupId}/report/${firstReportId}`); // Navegar a la ruta con groupId y reportId
+        navigate(`/translator/${groupId}/report/${firstReportId-1}`); // Navegar a la ruta con groupId y reportId
       }
     } catch (error) {
       console.error('Error fetching reports for group:', error);
