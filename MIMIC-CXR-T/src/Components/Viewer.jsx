@@ -122,9 +122,19 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     </Tooltip>
   );
 
+  const handleNextReport = async () => {
+    try {
+      const newProgressByReports = calculateProgressByReports();
+      updateReportProgress(newProgressByReports, groupId, currentIndex+1, token);
+      goToNextReport();
+    } catch (error) {
+      console.error('Error updating progress:', error);
+    }
+  };
+
   const updateProgressReportInDatabase = async (newProgressByReports) => {
     try {
-      await updateReportProgress(newProgressByReports, groupId, token);
+      await updateReportProgress(newProgressByReports, groupId, currentIndex, token);
       } catch (error) {
       console.error('Error updating progress:', error);
     }
@@ -403,7 +413,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
             </Button>
             <Button
               variant="primary"
-              onClick={goToNextReport}
+              onClick={handleNextReport}
               disabled={reportsLenght === 0 || currentIndex === reportsLenght - 1}
             >
               Siguiente reporte

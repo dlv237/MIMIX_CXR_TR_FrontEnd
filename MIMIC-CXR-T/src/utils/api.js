@@ -168,9 +168,9 @@ export async function updateUserReportGroupProgress(progressTranslatedSentences,
   return response.data;
 }
 
-export async function updateReportProgress(progressReports, reportGroupId, token) {
+export async function updateReportProgress(progressReports, reportGroupId, lastTranslatedReportId, token) {
   const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/userreportgroups/updateprogressReports/${reportGroupId}`, {
-    progressReports}, config(token),
+    progressReports, lastTranslatedReportId}, config(token),
   );
   return response.data;
 }

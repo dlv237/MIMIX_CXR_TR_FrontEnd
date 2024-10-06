@@ -3,7 +3,7 @@ import { Row, Button, Table, ProgressBar } from 'react-bootstrap';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { getReportGroupsByUser, getUserReportGroup, getReportGroupReports } from '../utils/api';
+import { getReportGroupsByUser, getUserReportGroup } from '../utils/api';
 
 import './reportgroupselection.css';
 
@@ -14,16 +14,13 @@ const ReportGroupSelection = () => {
   const [sortColumn, setSortColumn] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
   const [progressSortDirection, setProgressSortDirection] = useState('asc');
+  const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
 
   const navigate = useNavigate();
 
   const handleSelectButtonClick = async (groupId) => {
     try {
-      const response = await getReportGroupReports(groupId, token);
-      if (response.length > 0) {
-        const firstReportId = response[0].report.reportId; // Obtener el primer reporte del grupo
-        navigate(`/translator/${groupId}/report/${firstReportId-1}`); // Navegar a la ruta con groupId y reportId
-      }
+      navigate(`/translator/${groupId}/report/${lastTranslatedReportId}`); // Navegar a la ruta con groupId y reportId
     } catch (error) {
       console.error('Error fetching reports for group:', error);
     }
@@ -38,7 +35,9 @@ const ReportGroupSelection = () => {
       const response = await getUserReportGroup(reportGroupId, token);
       if (response) {
         let progressReportGroup = response.progressReports;
+        let lastTranslatedReportId = response.lastTranslatedReportId;
         setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: progressReportGroup }));
+        setLastTranslatedReportId(lastTranslatedReportId);
       }
       // Devuelve la promesa resultante
       return response;

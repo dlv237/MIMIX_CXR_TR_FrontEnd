@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { Button, Modal, Form, Row, Card, Col, 
+import { Button, Modal, Form, Row, Card, 
   Alert, Badge, Accordion } from 'react-bootstrap';
 import { AuthContext } from '../../auth/AuthContext';
 import {
@@ -24,6 +24,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
   const [translatedSentence, setTranslatedSentence] = useState('');
   const [originalSentence, setOriginalSentence] = useState('');
   const [editedTranslatedSentence, setEditedTranslatedSentence] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [otherErrorDescription, setOtherErrorDescription] = useState('');
   const { token } = useContext(AuthContext);
   const [selectedOptionsByType, setSelectedOptionsByType] = useState({});
