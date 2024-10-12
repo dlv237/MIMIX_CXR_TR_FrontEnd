@@ -59,3 +59,32 @@ color: black;
 background-color: rgb(255, 213, 122);
 color: black;
 }
+
+.highlighted {
+  background-color: yellow; /* O el color que prefieras */
+}
+
+
+.highlight-primary {
+  background-color: rgba(0, 123, 255, 0.5); /* Color de fondo para 'primary' */
+}
+
+.highlight-secondary {
+  background-color: rgba(108, 117, 125, 0.5); /* Color de fondo para 'secondary' */
+}
+
+.highlight-success {
+  background-color: rgba(40, 167, 69, 0.5); /* Color de fondo para 'success' */
+}
+
+.highlight-danger {
+  background-color: rgba(220, 53, 69, 0.5); /* Color de fondo para 'danger' */
+}
+
+.highlight-warning {
+  background-color: rgba(255, 193, 7, 0.5); /* Color de fondo para 'warning' */
+}
+
+.highlight-light {
+  background-color: rgba(248, 249, 250, 0.5); /* Color de fondo para 'light' */
+}

@@ -228,100 +228,98 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
         <ModalHeaderCorrecction originalSentence={originalSentence} translatedSentence={translatedSentence}/>
 
         <Modal.Body className="modal-body">
-            <Form>
-              <Form.Group>
-                
-                
-                <div className="">
-                    <Card className="mb-4 border-primary " >      
-                        <Accordion>
-                            <Accordion.Item eventKey="0">
-                            <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong>sobre palabras con <strong>&nbsp;errores terminológicos</strong></Accordion.Header>
-                            <Accordion.Body className="examples-text">
-                                Este tipo de error se produce cuando la traducción no refleja con precisión los términos o conceptos médicos específicos, lo que puede afectar 
-                                la comprensión adecuada del informe médico o dando información plenamente equivocada.<br/>
-                                <br/><strong>Ejemplo:</strong><br/>
-                                Original (inglés): The patient has <u>type II</u> diabetes mellitus<br/>
-                                Traducción incorrecta (español): El paciente tiene diabetes mellitus <u>tipo I</u><br/>
-                                Traducción correcta (español): El paciente tiene diabetes mellitus <u>tipo II</u><br/>
-                            </Accordion.Body>
-                            </Accordion.Item>
-                            <Card border="light" className="card-accordion">
-                                <WordSelector
-                                    sentence={translatedSentence}
-                                    disabled={false}
-                                    variant="primary"
-                                    selectedOptions={selectedOptionsByType['terminological']}
-                                    initialSelectedWords={selectedWords}
-                                    onOptionClick={(option) => handleOptionClick(option, 'terminological')}
-                                />
-                            </Card>
-                        </Accordion>
+          <Form>
+            <Form.Group>
+              <div className="">
+                <Card className="mb-4 border-primary " >      
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                    <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong>sobre palabras con <strong>&nbsp;errores terminológicos</strong></Accordion.Header>
+                    <Accordion.Body className="examples-text">
+                      Este tipo de error se produce cuando la traducción no refleja con precisión los términos o conceptos médicos específicos, lo que puede afectar 
+                      la comprensión adecuada del informe médico o dando información plenamente equivocada.<br/>
+                      <br/><strong>Ejemplo:</strong><br/>
+                      Original (inglés): The patient has <u>type II</u> diabetes mellitus<br/>
+                      Traducción incorrecta (español): El paciente tiene diabetes mellitus <u>tipo I</u><br/>
+                      Traducción correcta (español): El paciente tiene diabetes mellitus <u>tipo II</u><br/>
+                    </Accordion.Body>
+                    </Accordion.Item>
+                    <Card border="light" className="card-accordion">
+                      <WordSelector
+                        sentence={translatedSentence}
+                        disabled={false}
+                        variant="primary"
+                        selectedOptions={selectedOptionsByType['terminological']}
+                        initialSelectedWords={selectedWords}
+                        onOptionClick={(option) => handleOptionClick(option, 'terminological')}
+                      />
                     </Card>
+                  </Accordion>
+                </Card>
 
-                    <Card className="mb-4 border-success">      
-                        <Accordion>
-                            <Accordion.Item eventKey="0">
-                                <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
-                                <Accordion.Body className="examples-text">
-                                    Este tipo de error se refiere a todos los tipos de error gramaticales, semánticos, léxicos, etc. que no representen correctamente el significado
-                                    de la oración original al estar mal escritas o cambiando el significado original.<br/>
-                                    <br/><strong>Ejemplo:</strong><br/>
-                                    Original (inglés): The patient <u>explained</u> his complications to the doctor.<br/>
-                                    Traducción incorrecta (español): El paciente <u>explicado</u> sus complicaciones al médico.<br/>
-                                    Traducción correcta (español): El paciente <u>explicó</u> sus complicaciones al médico.
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Card border="light" className="card-accordion">
-                              <WordSelector
-                                  sentence={translatedSentence}
-                                  disabled={false}
-                                  variant="success"
-                                  selectedOptions={selectedOptionsByType['grammatical']}
-                                  initialSelectedWords={selectedWords}
-                                  onOptionClick={(option) => handleOptionClick(option, 'grammatical')}
-                                  />
-                            </Card>
-                        </Accordion>
-                    </Card>  
-
-                    <Card className="mb-1 border border-warning" >      
-                        <Accordion>
-                            <Accordion.Item eventKey="0">
-                                <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
-                                <Accordion.Body className="examples-text">
-                                    Ocurren cuando la traducción, si bien transmite el significado general del texto de origen, carece del flujo natural.
-                                    Este tipo de error puede hacer parecer forzada la traducción y no representan como un nativo en el idioma diría la frase correspondiente.<br/>
-                                    <br/><strong>Ejemplo:</strong><br/>
-                                    Original (inglés): The patient received <u>oral</u> medication.<br/>
-                                    Traducción incorrecta (español): El paciente recibió medicación <u>por boca</u>. <br/>
-                                    Traducción correcta (español): El paciente recibió medicación <u>oral</u>.<br/>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                            <Card border="light" className="card-accordion">
-                            <WordSelector
-                                sentence={translatedSentence}
-                                disabled={false}
-                                variant="warning"
-                                selectedOptions={selectedOptionsByType['functional']}
-                                initialSelectedWords={selectedWords}
-                                onOptionClick={(option) => handleOptionClick(option, 'functional')}
-                            />
-                            </Card>
-                        </Accordion>
+                <Card className="mb-4 border-success">      
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
+                      <Accordion.Body className="examples-text">
+                        Este tipo de error se refiere a todos los tipos de error gramaticales, semánticos, léxicos, etc. que no representen correctamente el significado
+                        de la oración original al estar mal escritas o cambiando el significado original.<br/>
+                        <br/><strong>Ejemplo:</strong><br/>
+                        Original (inglés): The patient <u>explained</u> his complications to the doctor.<br/>
+                        Traducción incorrecta (español): El paciente <u>explicado</u> sus complicaciones al médico.<br/>
+                        Traducción correcta (español): El paciente <u>explicó</u> sus complicaciones al médico.
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Card border="light" className="card-accordion">
+                      <WordSelector
+                        sentence={translatedSentence}
+                        disabled={false}
+                        variant="success"
+                        selectedOptions={selectedOptionsByType['grammatical']}
+                        initialSelectedWords={selectedWords}
+                        onOptionClick={(option) => handleOptionClick(option, 'grammatical')}
+                      />
                     </Card>
-                </div>
-              </Form.Group>
-            </Form>
+                  </Accordion>
+                </Card>  
+
+                <Card className="mb-1 border border-warning" >      
+                  <Accordion>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
+                      <Accordion.Body className="examples-text">
+                        Ocurren cuando la traducción, si bien transmite el significado general del texto de origen, carece del flujo natural.
+                        Este tipo de error puede hacer parecer forzada la traducción y no representan como un nativo en el idioma diría la frase correspondiente.<br/>
+                        <br/><strong>Ejemplo:</strong><br/>
+                        Original (inglés): The patient received <u>oral</u> medication.<br/>
+                        Traducción incorrecta (español): El paciente recibió medicación <u>por boca</u>. <br/>
+                        Traducción correcta (español): El paciente recibió medicación <u>oral</u>.<br/>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    <Card border="light" className="card-accordion">
+                      <WordSelector
+                        sentence={translatedSentence}
+                        disabled={false}
+                        variant="warning"
+                        selectedOptions={selectedOptionsByType['functional']}
+                        initialSelectedWords={selectedWords}
+                        onOptionClick={(option) => handleOptionClick(option, 'functional')}
+                      />
+                    </Card>
+                  </Accordion>
+                </Card>
+              </div>
+            </Form.Group>
+          </Form>
         </Modal.Body>
 
         <Form.Group className="edit-frase">
           <Row className="mx-2 my-2" >
-              <Form.Label className="h4" >
-                <Badge  bg="danger" >
-                    Escriba la traducción corregida
-                </Badge>
-              </Form.Label> 
+            <Form.Label className="h4" >
+              <Badge  bg="danger" >
+                Escriba la traducción corregida
+              </Badge>
+            </Form.Label> 
             <Form.Control
               as="textarea"
               rows={2}
