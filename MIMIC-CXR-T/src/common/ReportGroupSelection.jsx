@@ -105,7 +105,7 @@ const ReportGroupSelection = () => {
     <div>
       <NavBarReportSelection />
       <h3>Selecciona un grupo de reportes a traducir:</h3>
-      <Row>
+      <Row style={{width: '50rem', textAlignLast: 'center'}} className="justify-content-center">
         <Table striped bordered hover variant="primary" responsive='sm' className="custom-table">
           <thead>
             <tr>
@@ -126,24 +126,20 @@ const ReportGroupSelection = () => {
               <tr key={index}>
                 <td className="w-10">{group.id}</td>
                 <td className="w-50">
-                  <ProgressBar striped animated className="custom-progress-bar"
-                    now={Math.round(reportProgress[group.id])}
-                    label={`${Math.round(reportProgress[group.id])}%`}
-                    variant={
-                      Math.round(reportProgress[group.id]) <= 33 ? "danger" :
-                      Math.round(reportProgress[group.id]) <= 99 ? "warning" :
-                      "success"
-                    } />
+                  {Math.round(reportProgress[group.id])}%
+                  <div className="overflow-hidden rounded-full bg-gray-200">
+                    <div style={{ width: `${Math.round(reportProgress[group.id])}%` }} className="h-3 rounded-full bg-indigo-600" />
+                  </div>
                 </td>
                 <td className="w-50">
                   {(group.createdAt).slice(8,10)+(group.createdAt).slice(4,8)+(group.createdAt).slice(0,4)}
                 </td>
                 {/* Otros datos de la fila si los hay */}
                 <td className="w-50">
-                  <Button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])}>Traducir</Button>
+                  <Button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className='rounded-lg'>Traducir</Button>
                 </td>
                 <td className="w-50">
-                  <Button variant="secondary" onClick={() => viewTableUserDisplayReportGroup(group.id)}>Reportes</Button>
+                  <Button variant="secondary" onClick={() => viewTableUserDisplayReportGroup(group.id)} className='rounded-lg'>Reportes</Button>
                 </td>
               </tr>
             ))}
