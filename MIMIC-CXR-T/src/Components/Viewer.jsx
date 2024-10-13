@@ -280,11 +280,11 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           >
           <div>
             <h4 className="sr-only text-lg">Status</h4>
-            <p className="text-lg font-medium text-gray-900 mt-3">{progressReports.toFixed(1)}% completado</p>
+            <p className="text-lg font-medium text-gray-900 mt-3">{(progressReports-1).toFixed(1)}% completado</p>
             <div aria-hidden="true" className="mt-6">
             <div className="overflow-hidden rounded-full bg-gray-200 m-6">
               <div
-              style={{ width: `${progressReports}%` }}
+              style={{ width: `${progressReports-1}%` }}
               className="h-4 rounded-full bg-indigo-600"
               />
             </div>
