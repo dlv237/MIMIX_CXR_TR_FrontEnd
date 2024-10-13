@@ -62,7 +62,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   };
 
   const calculateProgressByReports = () => {
-    return reportsLenght ? ((currentIndex + 1) / reportsLenght) * 100 : 0;
+    return reportsLenght ? ((currentIndex) / reportsLenght) * 100 : 0;
   };
 
   const updateProgressForCurrentReport = () => {
@@ -280,11 +280,11 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           >
           <div>
             <h4 className="sr-only text-lg">Status</h4>
-            <p className="text-lg font-medium text-gray-900 mt-3">{(progressReports-1).toFixed(1)}% completado</p>
+            <p className="text-lg font-medium text-gray-900 mt-3">{(progressReports).toFixed(1)}% completado</p>
             <div aria-hidden="true" className="mt-6">
             <div className="overflow-hidden rounded-full bg-gray-200 m-6">
               <div
-              style={{ width: `${progressReports-1}%` }}
+              style={{ width: `${progressReports}%` }}
               className="h-4 rounded-full bg-indigo-600"
               />
             </div>
