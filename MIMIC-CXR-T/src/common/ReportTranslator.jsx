@@ -38,8 +38,17 @@ function ReportTranslator() {
       try {
         const reportResponse = await getReportFromGroupReports(groupId, reportId, token);
         const data = reportResponse;
+        const sortById = (a, b) => a.id - b.id;
+        
+        data.report.sentences.background.sort(sortById);
+        data.report.sentences.findings.sort(sortById);
+        data.report.sentences.impression.sort(sortById);
+
+        data.report.translated_sentences.background.sort(sortById);
+        data.report.translated_sentences.findings.sort(sortById);
+        data.report.translated_sentences.impression.sort(sortById);
         setReport(data);
-        console.log("report: ", data);
+
       } catch (error) {
         console.error('Error fetching report:', error);
       }
