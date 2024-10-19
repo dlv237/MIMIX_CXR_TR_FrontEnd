@@ -12,8 +12,10 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
   }, [onOptionClick]);
 
   useEffect(() => {
-    setSelectedWords(initialSelectedWords);
-    highlightInitialSelectedWords(initialSelectedWords);
+    const filteredInitialSelectedWords = initialSelectedWords.filter(word => word.type === mapVariantToType(variant));
+    setSelectedWords(filteredInitialSelectedWords);
+    highlightInitialSelectedWords(filteredInitialSelectedWords);
+    console.log("inicial", filteredInitialSelectedWords);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSelectedWords]);
 
@@ -33,10 +35,24 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
         if (wordElement) {
           const mark = document.createElement('mark');
           mark.style.backgroundColor = highlightColor;
+          mark.style.padding = '0';
+          mark.style.margin = '0';
+          mark.style.display = 'inline';
           mark.textContent = wordElement.textContent;
           wordElement.replaceWith(mark);
         }
       }
+    });
+  };
+
+  const unhighlightWords = () => {
+    const marks = sentenceRef.current.querySelectorAll('mark');
+    marks.forEach((mark) => {
+      const parent = mark.parentNode;
+      while (mark.firstChild) {
+        parent.insertBefore(mark.firstChild, mark);
+      }
+      parent.removeChild(mark);
     });
   };
 
@@ -122,8 +138,19 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
     console.log(updatedSelectedWords);
   };
 
+  const handleUndoSelection = () => {
+    setSelectedWords([]);
+  };
+
+  useEffect(() => {
+    if (selectedWords.length === 0) {
+      unhighlightWords();
+      console.log(selectedWords);
+    }
+  }, [selectedWords]);
+
   return (
-    <div>
+    <div className='flex flex-row justify-between'>
       <p ref={sentenceRef} onMouseUp={handleMouseUp}>
         {sentence.split(/\s+/).map((word, index) => (
           <span key={index} className="word-selector-word">
@@ -131,6 +158,30 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
           </span>
         ))}
       </p>
+      <button 
+        className='bg-white cursor-auto hover: none focus:outline-none focus:ring-0' 
+        disabled={selectedWords.length === 0}
+        onClick={() => handleUndoSelection()}
+        style={{ pointerEvents: 'auto' }}
+      >
+        <svg 
+          className={`w-6 h-6 ${selectedWords.length === 0 ? 'text-gray-300' : 'text-gray-800'}`} 
+          aria-hidden="true" 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="24" 
+          height="24" 
+          fill="none" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke="currentColor" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth="2" 
+            d="M3 9h13a5 5 0 0 1 0 10H7M3 9l4-4M3 9l4 4"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
