@@ -3,7 +3,7 @@ import './wordSelector.css';
 
 function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOptionClick }) {
   const [selectedWords, setSelectedWords] = useState([]);
-  const highlightColor = 'rgba(255, 255, 0, 0.5)';
+  const highlightColor = mapVariantToColor(variant);
   const onOptionClickRef = useRef(onOptionClick);
   const sentenceRef = useRef(null);
 
@@ -25,15 +25,15 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
   }, [selectedWords]);
 
   const highlightInitialSelectedWords = (words) => {
-    words.forEach(({ word, index, type }) => {
+    words.forEach(({ index, type }) => {
       if (type === mapVariantToType(variant)) {
         const wordElements = sentenceRef.current.childNodes;
-        const wordElement = wordElements[index]; // Obtener el elemento correspondiente a la palabra
+        const wordElement = wordElements[index];
         if (wordElement) {
           const mark = document.createElement('mark');
           mark.style.backgroundColor = highlightColor;
-          mark.textContent = wordElement.textContent; // Agregar el texto
-          wordElement.replaceWith(mark); // Reemplazar el elemento original
+          mark.textContent = wordElement.textContent;
+          wordElement.replaceWith(mark);
         }
       }
     });
@@ -145,6 +145,23 @@ const mapVariantToType = (variant) => {
       return 'other';
     default:
       return 'other';
+  }
+};
+
+const mapVariantToColor = (variant) => {
+  switch (variant) {
+    case 'primary':
+      return 'lightblue';
+    case 'secondary':
+      return 'lightgreen';
+    case 'success':
+      return 'lightgreen';
+    case 'warning':
+      return 'gold';
+    case 'danger':
+      return 'lightred';
+    default:
+      return 'lightgrey';
   }
 };
 

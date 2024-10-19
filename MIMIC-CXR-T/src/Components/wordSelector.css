@@ -61,30 +61,30 @@ color: black;
 }
 
 .highlighted {
-  background-color: yellow; /* O el color que prefieras */
+  background-color: yellow;
 }
 
 
 .highlight-primary {
-  background-color: rgba(0, 123, 255, 0.5); /* Color de fondo para 'primary' */
+  background-color: rgba(0, 123, 255, 0.5);
 }
 
 .highlight-secondary {
-  background-color: rgba(108, 117, 125, 0.5); /* Color de fondo para 'secondary' */
+  background-color: rgba(108, 117, 125, 0.5);
 }
 
 .highlight-success {
-  background-color: rgba(40, 167, 69, 0.5); /* Color de fondo para 'success' */
+  background-color: rgba(40, 167, 69, 0.5);
 }
 
 .highlight-danger {
-  background-color: rgba(220, 53, 69, 0.5); /* Color de fondo para 'danger' */
+  background-color: rgba(220, 53, 69, 0.5);
 }
 
 .highlight-warning {
-  background-color: rgba(255, 193, 7, 0.5); /* Color de fondo para 'warning' */
+  background-color: rgba(255, 193, 7, 0.5);
 }
 
 .highlight-light {
-  background-color: rgba(248, 249, 250, 0.5); /* Color de fondo para 'light' */
+  background-color: rgba(248, 249, 250, 0.5);
 }
