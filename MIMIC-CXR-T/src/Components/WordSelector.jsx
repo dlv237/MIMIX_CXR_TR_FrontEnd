@@ -14,6 +14,7 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
   useEffect(() => {
     setSelectedWords(initialSelectedWords);
     highlightInitialSelectedWords(initialSelectedWords);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSelectedWords]);
 
   useEffect(() => {
@@ -62,24 +63,24 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
           return offset;
         };
 
-        // Ajustar startContainer y endContainer
         let startOffset = findWordBoundary(startContainer, range.startOffset, 'start');
         let endOffset = findWordBoundary(endContainer, range.endOffset, 'end');
 
-        // Crear un nuevo rango que abarque desde startContainer hasta endContainer
         const newRange = document.createRange();
         newRange.setStart(startContainer, startOffset);
         newRange.setEnd(endContainer, endOffset);
 
-        // Resaltar el contenido del nuevo rango
+
         const wordsInRange = newRange.cloneContents();
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
+        mark.style.padding = '0';
+        mark.style.margin = '0';
+        mark.style.display = 'inline';
         mark.appendChild(wordsInRange);
         newRange.deleteContents();
         newRange.insertNode(mark);
 
-        // Actualizar las palabras seleccionadas, excluyendo los espacios
         updateSelectedWords();
       }
       selection.removeAllRanges();
@@ -89,31 +90,34 @@ function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOpt
   const updateSelectedWords = () => {
     const marks = sentenceRef.current.querySelectorAll('mark');
     const updatedSelectedWords = [];
-
-    // Obtener todas las palabras de la oración
+  
     const allWords = sentence.split(/\s+/);
-
+    const seenWords = new Set();
+  
     marks.forEach((mark) => {
       const markedText = mark.textContent;
       const words = markedText.split(/\s+/);
-
-      let currentIndex = 0; // Para rastrear el índice en allWords
+  
+      let currentIndex = 0;
       words.forEach((word) => {
         if (word) {
-          // Encontrar el índice global de la palabra
           while (currentIndex < allWords.length && allWords[currentIndex] !== word) {
             currentIndex++;
           }
-          
-          updatedSelectedWords.push({
-            word,
-            index: currentIndex, // Usar el índice correcto
-            type: mapVariantToType(variant),
-          });
+  
+          const wordKey = `${word}-${currentIndex}`;
+          if (!seenWords.has(wordKey)) {
+            updatedSelectedWords.push({
+              word,
+              index: currentIndex,
+              type: mapVariantToType(variant),
+            });
+            seenWords.add(wordKey);
+          }
         }
       });
     });
-
+  
     setSelectedWords(updatedSelectedWords);
     console.log(updatedSelectedWords);
   };
