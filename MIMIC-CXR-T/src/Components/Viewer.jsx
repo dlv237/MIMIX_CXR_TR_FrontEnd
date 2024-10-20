@@ -5,7 +5,7 @@ import { Table, ToggleButton, Form, Container, Row, Col, OverlayTrigger, Tooltip
 import './viewer.css';
 import ModalSuggestions from './ModalSuggestionCorrecction/ModalSuggestionCorrecctions2';
 
-import { createUserTranslatedSentence, getPreviousUserTranslatedSentence, updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../utils/api';
+import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 
 function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, currentIndex, checkAreReportsCompleted, goToNextReport, goToPreviousReport }) {
@@ -37,7 +37,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     triggerProgressTranslatedSentencesRecalculation();
 
     const newProgressByReports = calculateProgressByReports();
-    setProgressReports(newProgressByReports);
+    setProgressReports(newProgressByReports - 100/reportsLenght);
   };
 
   const handleCloseWithoutSave = async () => {

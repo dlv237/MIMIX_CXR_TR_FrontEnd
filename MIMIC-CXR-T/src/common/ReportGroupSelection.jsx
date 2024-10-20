@@ -36,8 +36,8 @@ const ReportGroupSelection = () => {
       if (response) {
         const totalReports = await getReportGroupReportsLength(reportGroupId, token);
         let lastTranslatedReportId = response.lastTranslatedReportId;
-        let progressReportGroup = response.progressReports + 100/totalReports;
-        setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: progressReportGroup }));
+        let progressReportGroup = response.progressReports;
+        setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: lastTranslatedReportId ? (lastTranslatedReportId / totalReports) * 100 : 0 }));
         setLastTranslatedReportId(lastTranslatedReportId);
       }
       // Devuelve la promesa resultante

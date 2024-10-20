@@ -65,11 +65,11 @@ const handleAccept = async (event) => {
       <Button variant="primary" onClick={handleLoadFile}>
         Cargar Reporte
       </Button>
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal} className='mt-32'>
         <Modal.Header closeButton>
           <Modal.Title>Nuevo Reporte</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className='h-96 overflow-auto'>
           <p>Contenido del archivo JSON:</p>
           <pre>{fileContent}</pre>
         </Modal.Body>

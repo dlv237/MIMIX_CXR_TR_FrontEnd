@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './wordSelector.css';
 
-function WordSelector({ sentence, disabled, variant, initialSelectedWords, onOptionClick }) {
+function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }) {
   const [selectedWords, setSelectedWords] = useState([]);
   const highlightColor = mapVariantToColor(variant);
   const onOptionClickRef = useRef(onOptionClick);

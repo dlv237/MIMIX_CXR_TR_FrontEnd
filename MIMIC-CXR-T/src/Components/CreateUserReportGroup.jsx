@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Form, Button, ListGroup, Table, Col, Row, Alert  } from 'react-bootstrap';
 import { AuthContext } from '../auth/AuthContext';
 
@@ -86,7 +86,7 @@ const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGr
 
   
   return (
-    <div>
+    <div className='w-fit justify-self-center'>
       <Row>
       <Alert show={showError} variant="danger" onClose={() => setShowError(false)} dismissible>{errorMsg}</Alert>
       <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>Asociación generada con éxito.</Alert>

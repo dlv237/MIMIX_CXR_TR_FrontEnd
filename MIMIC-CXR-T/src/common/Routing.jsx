@@ -5,7 +5,7 @@ import ReportTranslator from '../common/ReportTranslator';
 import ModalLogin from '../profile/ModalLogin';
 import Signup from '../profile/Signup';
 import ReportGroupSelection from '../common/ReportGroupSelection'; 
-import Admin from '../common/Admin';
+import Admin2 from './Admin2';
 import TableUserDisplayReportGroup from '../Components/TableUserDisplayReportGroup';
 import AccessDenied from '../Components/AccessDenied';
 
@@ -20,7 +20,7 @@ function Routing() {
         <Route path="/login" element={<ModalLogin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reportselection" element={<ReportGroupSelection />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={<Admin2 />} />r
         <Route path="/access-denied" element={<AccessDenied />} />
 
       </Routes>

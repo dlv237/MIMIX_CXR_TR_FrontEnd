@@ -234,7 +234,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-4 border-primary " >      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                    <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong>sobre palabras con <strong>&nbsp;errores terminológicos</strong></Accordion.Header>
+                    <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> palabras con <strong>&nbsp;errores terminológicos</strong></Accordion.Header>
                     <Accordion.Body className="examples-text">
                       Este tipo de error se produce cuando la traducción no refleja con precisión los términos o conceptos médicos específicos, lo que puede afectar 
                       la comprensión adecuada del informe médico o dando información plenamente equivocada.<br/>
@@ -247,7 +247,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                     <Card border="light" className="card-accordion">
                       <WordSelector
                         sentence={translatedSentence}
-                        disabled={false}
                         variant="primary"
                         selectedOptions={selectedOptionsByType['terminological']}
                         initialSelectedWords={selectedWords}
@@ -260,7 +259,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-4 border-success">      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
+                      <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
                       <Accordion.Body className="examples-text">
                         Este tipo de error se refiere a todos los tipos de error gramaticales, semánticos, léxicos, etc. que no representen correctamente el significado
                         de la oración original al estar mal escritas o cambiando el significado original.<br/>
@@ -273,7 +272,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                     <Card border="light" className="card-accordion">
                       <WordSelector
                         sentence={translatedSentence}
-                        disabled={false}
                         variant="success"
                         selectedOptions={selectedOptionsByType['grammatical']}
                         initialSelectedWords={selectedWords}
@@ -286,7 +284,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-1 border border-warning" >      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Si encuentra, <strong>&nbsp;haga click&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
+                      <Accordion.Header>Si encuentra, <strong>&nbsp;selecciones&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
                       <Accordion.Body className="examples-text">
                         Ocurren cuando la traducción, si bien transmite el significado general del texto de origen, carece del flujo natural.
                         Este tipo de error puede hacer parecer forzada la traducción y no representan como un nativo en el idioma diría la frase correspondiente.<br/>
@@ -299,7 +297,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                     <Card border="light" className="card-accordion">
                       <WordSelector
                         sentence={translatedSentence}
-                        disabled={false}
                         variant="warning"
                         selectedOptions={selectedOptionsByType['functional']}
                         initialSelectedWords={selectedWords}
