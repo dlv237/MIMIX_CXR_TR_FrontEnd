@@ -3,7 +3,7 @@ import { Table, Button, Col, Container, Row, Alert, Spinner } from 'react-bootst
 import './tabledisplayreportgroup.css';
 import NavBarReportSelection from './NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
-import { getReportGroupReports, getUserReportGroup, getReportById, getPreviousUserTranslatedSentence } from '../utils/api';
+import { getReportGroupReports, getUserReportGroup, getReportById } from '../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIsReportCompleted } from '../utils/api';
 
@@ -38,19 +38,6 @@ const TableUserDisplayReportGroup = () => {
           const translatedSentencesReport = report.report.translated_sentences;
           const userTranslatedSentence = [];
          
-          for (const typeTranslatedSentence of Object.keys(translatedSentencesReport)) {
-            for (const translatedSentence of translatedSentencesReport[typeTranslatedSentence]) {
-              try {
-                const previousUserTranslatedSentence = await getPreviousUserTranslatedSentence(translatedSentence.id, token);
-                if (previousUserTranslatedSentence) {
-                  userTranslatedSentence.push(previousUserTranslatedSentence);
-                       }
-              } catch (error) {
-                console.error("Error fetching previous user translated sentence:", error);
-                setLoading(false); // Finaliza la carga
-              }
-            }
-          }
         
           let totalTranslatedSentencesReport = 0;
           Object.keys(translatedSentencesReport).forEach((type) => {
