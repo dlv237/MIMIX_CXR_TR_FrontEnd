@@ -3,7 +3,7 @@ import { Row, Button, Table, ProgressBar } from 'react-bootstrap';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { getReportGroupsByUser, getUserReportGroup } from '../utils/api';
+import { getReportGroupsByUser, getUserReportGroup, getReportGroupReportsLength } from '../utils/api';
 
 import './reportgroupselection.css';
 
@@ -34,8 +34,9 @@ const ReportGroupSelection = () => {
     try {
       const response = await getUserReportGroup(reportGroupId, token);
       if (response) {
-        let progressReportGroup = response.progressReports;
+        const totalReports = await getReportGroupReportsLength(reportGroupId, token);
         let lastTranslatedReportId = response.lastTranslatedReportId;
+        let progressReportGroup = response.progressReports + 100/totalReports;
         setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: progressReportGroup }));
         setLastTranslatedReportId(lastTranslatedReportId);
       }
