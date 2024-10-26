@@ -5,9 +5,8 @@ import './translator.css';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { Container, Col, Row, Alert } from 'react-bootstrap';
-import { getUserTranslatedSentencesByReportGroup, 
-  updateUserReportGroupProgress, getIsReportCompleted, fetchTotalTranslatedSentences, 
-  getReportGroupReportsLength, getReportFromGroupReports
+import {
+  getIsReportCompleted, getReportGroupReportsLength, getReportFromGroupReports
 } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,17 +16,10 @@ function ReportTranslator() {
   const [report, setReport] = useState({});
   const [reportsLength, setReportsLength] = useState(0);
 
-  const [progressTranslatedSentences, setProgressTranslatedSentences] = useState(0);
-  const [reviewedTranslatedSentences, setReviewedTranslatedSentences] = useState(0);
-  const [totalTranslatedSentences, setTotalTranslatedSentences] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const dismissDelay = 1400;
   const navigate = useNavigate();
 
-
-  const calculateProgressTranslatedSentences = () => {
-    return totalTranslatedSentences ? (reviewedTranslatedSentences / totalTranslatedSentences) * 100 : 0;
-  };
   
   const closeGeneralAlert = () => {
     setShowAlert(false);
@@ -68,38 +60,7 @@ function ReportTranslator() {
     
     fetchReportsLenght();
   }, [groupId, token]);
-
-  useEffect(() => {
-    const newProgress = calculateProgressTranslatedSentences();
-    setProgressTranslatedSentences(newProgress);
-    updateProgressTranslatedSentencesInDatabase(newProgress).catch(error => {
-      console.error('Error updating progress:', error);
-    });
-  }, [reviewedTranslatedSentences, totalTranslatedSentences]);
-
-  const calculateTotalTranslatedSentences = async () => {
-    const totalTranslatedSentencesResponse = await fetchTotalTranslatedSentences(groupId, token);
-    const total = totalTranslatedSentencesResponse.totalTranslatedSentences;
-    return total;
-  };
-
-  useEffect(() => {
-    const fetchTotalSentences = async () => {
-      const total = await calculateTotalTranslatedSentences();
-      setTotalTranslatedSentences(total);
-    };
-    fetchTotalSentences();
-  }, [groupId, token]);
   
-  
-
-  const updateProgressTranslatedSentencesInDatabase = async (progressTranslatedSentencesValue) => {
-    try {
-      await updateUserReportGroupProgress(progressTranslatedSentencesValue, groupId, token);
-      } catch (error) {
-      console.error('Error updating progress:', error);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,26 +75,10 @@ function ReportTranslator() {
     fetchData();
   }, [groupId, token]);
 
-  const triggerProgressTranslatedSentencesRecalculation = async () => {
-    await fetchUserTranslatedSentences(groupId);
-    const newProgressTranslatedSentences = calculateProgressTranslatedSentences();
-    setProgressTranslatedSentences(newProgressTranslatedSentences);
-    updateProgressTranslatedSentencesInDatabase(newProgressTranslatedSentences).catch(error => {
-      console.error('Error updating progress:', error);
-    });
-  };
 
   const fetchUserTranslatedSentences = async (groupId) => {
     try {
       console.log(groupId);
-      /*let translatedPhrasesReviewed = 0;
-      const response = await getUserTranslatedSentencesByReportGroup(groupId, token);
-      if (response) {
-          const numUserTranslatedPhrases = response.length;
-          translatedPhrasesReviewed += numUserTranslatedPhrases;
-        }
-        setReviewedTranslatedSentences(translatedPhrasesReviewed);
-      console.log("translatedPhrasesReviewed: ", translatedPhrasesReviewed)*/
     } catch (error) {
       console.error('Error fetching reviewed phrases:', error);
     }
@@ -185,7 +130,6 @@ function ReportTranslator() {
                 <Viewer
                   groupId={groupId}
                   report={report}
-                  triggerProgressTranslatedSentencesRecalculation={triggerProgressTranslatedSentencesRecalculation}
                   currentIndex={report.report.index}
                   checkAreReportsCompleted={getIsReportCompleted}
                   goToNextReport={goToNextReport}

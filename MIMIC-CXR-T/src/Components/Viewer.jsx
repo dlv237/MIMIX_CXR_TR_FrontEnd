@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Table, ToggleButton, Form, Container, Row, Col, OverlayTrigger, Tooltip, Badge, Button, ButtonGroup } from 'react-bootstrap';
+import { Table, ToggleButton, Form, Container, Row, Col, OverlayTrigger, Tooltip, Badge, Button } from 'react-bootstrap';
 import './viewer.css';
 import ModalSuggestions from './ModalSuggestionCorrecction/ModalSuggestionCorrecctions2';
 
-import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../utils/api';
+import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
+  updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
+  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getIsReportCompleted } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 
-function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, currentIndex, checkAreReportsCompleted, goToNextReport, goToPreviousReport }) {
+function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, currentIndex, goToNextReport, goToPreviousReport }) {
   const [translatedSentencesState, setTranslatedSentencesState] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTranslatedSentenceId, setSelectedTranslatedSentenceId] = useState(null);
@@ -16,12 +18,10 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   const [progressReports, setProgressReports] = useState(0);
   const [reportsLenght, setReportsLenght] = useState(0);
   const { token } = useContext(AuthContext);
-  const [uniqueTranslatedSentenceIds, setUniqueTranslatedSentenceIds] = useState(new Set());
-  const [totalReviewedSentences, setTotalReviewedSentences] = useState(0);
-  const [totalSentencesByReport, setTotalSentencesByReport] = useState({});
   const [suggestionData, setSuggestionData] = useState({});
   const [isCrossedSentences, setIsCrossedSentences] = useState({});
   const [sentencesSuggestions, setSentencesSuggestions] = useState({});
+  const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
 
   const handleModalSave = async (editedTranslatedSentence) => {
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
@@ -35,9 +35,6 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     }
 
     triggerProgressTranslatedSentencesRecalculation();
-
-    const newProgressByReports = calculateProgressByReports();
-    setProgressReports(newProgressByReports - 100/reportsLenght);
   };
 
   const handleCloseWithoutSave = async () => {
@@ -62,12 +59,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   };
 
   const calculateProgressByReports = () => {
-    return reportsLenght ? ((currentIndex) / reportsLenght) * 100 : 0;
-  };
-
-  const updateProgressForCurrentReport = () => {
-    const translatedSentencesCount = Object.values(translatedSentencesState).filter((value) => value !== null).length;
-    setTotalReviewedSentences(translatedSentencesCount);
+    return (reportsLenght && lastTranslatedReportId) ? (lastTranslatedReportId / reportsLenght) * 100 : 0;
   };
 
   const renderTooltipProgressBarReports = (props) => (
@@ -78,9 +70,13 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
 
   const handleNextReport = async () => {
     try {
+      const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
       const newProgressByReports = calculateProgressByReports();
-      await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
+      if ( currentIndex === lastTranslatedReportId && isCurrentReportCompleted.completed) {
+        await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
+      }
       goToNextReport();
+      
     } catch (error) {
       console.error('Error updating progress:', error);
     }
@@ -100,13 +96,24 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
       }
     };
 
+    const fetchLastTranslatedReportId = async () => {
+      try {
+        const response = await getUserReportGroup(groupId, token);
+        if (response) {
+          setLastTranslatedReportId(response.lastTranslatedReportId);
+        }
+      } catch (error) {
+        console.error('Error fetching user report group:', error);
+      }
+    };
+
+    fetchLastTranslatedReportId();
     fetchReportsLenght();
-  }, [translatedSentencesState]);
+  }, [translatedSentencesState, token, lastTranslatedReportId, report, groupId, calculateProgressByReports]);
 
   useEffect(() => {
     if (report) {
       setTranslatedSentencesState({});
-      setUniqueTranslatedSentenceIds(new Set());
 
       const updatedState = {};
       Object.keys(report.report.translated_sentences).forEach((type) => {
@@ -123,7 +130,6 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
   const loadUserTranslatedPhrase = async (translatedsentence) => {
     try {
       const response = await getPreviousUserTranslatedSentence(translatedsentence.id, token);
-      setUniqueTranslatedSentenceIds((prevIds) => new Set([...prevIds, translatedsentence.id]));
 
       if (response) {
         if (response.isSelectedCheck && response.state)
@@ -134,7 +140,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
         setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: null }));
       }
     } catch (error) {
-      setUniqueTranslatedSentenceIds((prevIds) => new Set([...prevIds, translatedsentence.id]));
+      console.error(`Error al cargar la traducción del usuario de la frase id: ${translatedsentence.id}:`, error)
     }
   };
 
@@ -174,17 +180,8 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     }
 
     triggerProgressTranslatedSentencesRecalculation();
-    updateProgressForCurrentReport();
   };
 
-  useEffect(() => {
-    setTotalSentencesByReport((prev) => ({
-      ...prev,
-      [report.reportId]: uniqueTranslatedSentenceIds.size,
-    }));
-
-    updateProgressForCurrentReport();
-  }, [uniqueTranslatedSentenceIds, report]);
 
   function ReportTable({ report }) {
     const renderRows = (report) => {
@@ -206,7 +203,9 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           <React.Fragment key={type}>
             {isSwitchChecked && (
               <tr className="title-row">
-                <th className="title-row">{type}</th><th className="title-row"></th><th className="title-row"></th>
+                <th className="title-row">{type}</th>
+                <th className="title-row"></th>
+                <th className="title-row w-[100%]"></th>
               </tr>
             )}
             {nonEmptyOriginalSentences.map((sentence, index) => {
@@ -218,8 +217,8 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
 
               return (
                 <tr key={index}>
-                  <td>{sentence.text}</td>
-                  <td>
+                  <td className='w-[45%]'>{sentence.text}</td>
+                  <td className='w-[45%]'>
                     {notReviewed ? (
                       <p>{nonEmptyTranslatedSentences[index]?.text}</p>
                     ) : (
@@ -334,7 +333,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
         </Col>
         </Row>
         <Row>
-        <Table striped hover responsive="lg" className="custom-table">
+        <Table striped hover responsive="lg" className="custom-table text-start">
           <tbody className="custom-table">
           {renderRows(report)}
           </tbody>

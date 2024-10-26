@@ -1,9 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
 import { Table, Button, Col, Container, Row, Alert, Spinner } from 'react-bootstrap';
-import './tabledisplayreportgroup.css';
 import NavBarReportSelection from './NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
-import { getReportGroupReports, getUserReportGroup, getReportById } from '../utils/api';
+import { getReportGroupReports, getReportById , getUserReportGroup} from '../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIsReportCompleted } from '../utils/api';
 
@@ -14,6 +13,8 @@ const TableUserDisplayReportGroup = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(true);
   const { groupId } = useParams();
+  const [ lastTranslatedReportId, setLastTranslatedReportId ] = useState(0);
+
   const navigate = useNavigate();
 
   
@@ -23,66 +24,41 @@ const TableUserDisplayReportGroup = () => {
       try {
         const dataReports = await getReportGroupReports(groupId, token);
         setReports(dataReports);
-        const numberOfReports = dataReports.length;
-        const userReportGroup = await getUserReportGroup(groupId, token);
-        const progressReports = userReportGroup.progressReports || 0;
-        const individualReportProgress = 100 / numberOfReports;
         const reportDetailsObject = {};
-        var remainingProgressReport = progressReports;
+
 
         for (const report of dataReports) {
           const reportId = report.report.reportId;
           const reportContent = await getReportById(reportId, token);
           const concatenatedString = reportContent.background + reportContent.findings + reportContent.impression;
           const truncatedString = concatenatedString.slice(0, 150);
-          const translatedSentencesReport = report.report.translated_sentences;
-          const userTranslatedSentence = [];
-         
-        
-          let totalTranslatedSentencesReport = 0;
-          Object.keys(translatedSentencesReport).forEach((type) => {
-            totalTranslatedSentencesReport += translatedSentencesReport[type].filter((sentence) => sentence.text.trim() !== "").length;
-          });
-          const translatedSentencesProgress = Math.round((userTranslatedSentence.length / totalTranslatedSentencesReport) * 100);
-          //console.log("translatedSentencesProgress: ", translatedSentencesProgress);
-
-          const numberOfReviewedTranslatedSentences = Math.round(translatedSentencesProgress * totalTranslatedSentencesReport / 100);
-          const individualTransaltedSentencesProgress = Math.round((numberOfReviewedTranslatedSentences / totalTranslatedSentencesReport) * 100);
-
-          var remainingProgressTranslatedSentencesReport = translatedSentencesProgress;
-
-          let progressReport = 0;
-          if (remainingProgressReport > 0) {
-            progressReport = 100;
-            remainingProgressReport -= individualReportProgress;
-            if (remainingProgressReport < 0) {
-              remainingProgressReport = 0;
-            }
-          }
-          let translatedSentencesProgressReport = 0;
-          if (remainingProgressTranslatedSentencesReport > 0) {
-            translatedSentencesProgressReport = translatedSentencesProgress;
-            remainingProgressTranslatedSentencesReport -= individualTransaltedSentencesProgress;
-            
-          }
 
           reportDetailsObject[reportId] = {
             content: truncatedString,
-            progressReport,
-            translatedSentencesProgressReport,
           };
         }
 
         setReportDetails(reportDetailsObject);
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       } catch (error) {
-        //console.error('Error fetching data:', error);
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
 
+    const fetchLastTranslatedReportId = async () => {
+      try {
+        const response = await getUserReportGroup(groupId, token);
+        if (response) {
+          setLastTranslatedReportId(response.lastTranslatedReportId);
+        }
+      } catch (error) {
+        console.error('Error fetching user report group:', error);
+      }
+    };
+
+    fetchLastTranslatedReportId();
     fetchData();
-  }, [groupId, token]);
+  }, [groupId, setLastTranslatedReportId, token]);
 
   const getIndexReport = async (reportId) => {
     for (const report of reports) {
@@ -94,14 +70,11 @@ const TableUserDisplayReportGroup = () => {
 
   const startTranslationReport = async (groupId, reportId) => {
     try {
-      //console.log(reports);
+
       const indexReport = await getIndexReport(reportId);
-      //console.log("indexReport: ",indexReport);
       if (indexReport >0){
         const previousReportId = reports[indexReport-1].report.reportId;
-        //console.log("previousReportId: ",previousReportId);
         const isReportCompleted = await getIsReportCompleted(previousReportId, token);
-        //console.log("isReportCompleted: ",isReportCompleted);
         if (!isReportCompleted.completed) {
           setShowAlert(true);
           return;
@@ -131,7 +104,7 @@ const TableUserDisplayReportGroup = () => {
 
   return (
     <>
-    <Container>
+    <Container className='mt-10 w-[90vw]'>
       <Row>
         <NavBarReportSelection />
       </Row>
@@ -151,11 +124,11 @@ const TableUserDisplayReportGroup = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Report IDs</th>
-                  <th>Contenido</th>
+                  <th className='w-[12%]'>Report IDs</th>
+                  <th className='w-[73%]'>Contenido</th>
                   {/* <th>Progreso reportes</th>
                   <th>Progreso oraciones traducidas</th> */}
-                  <th>Ver reporte</th>
+                  <th className='w-[15%]'>Ver reporte</th>
                 </tr>
               </thead>
               <tbody>
@@ -165,38 +138,17 @@ const TableUserDisplayReportGroup = () => {
 
                   return (
                     <tr key={report.report.index}>
-                      <td>{reportId}</td>
-                      <td>{reportDetail.content || ''}</td>
-                      {/* <td>
-                        <ProgressBar
-                          striped
-                          animated
-                          className="custom-progress-bar"
-                          now={reportDetail.progressReport || 0}
-                          label={`${Math.round(reportDetail.progressReport || 0)}%`}
-                          variant={
-                            Math.round(reportDetail.progressReport || 0) <= 33 ? 'danger' :
-                            Math.round(reportDetail.progressReport || 0) <= 99 ? 'warning' :
-                            'success'
+                      <td className='w-[12%]'>{reportId}</td>
+                      <td className='w-[73%] text-start'>{reportDetail.content || ''}</td>
+                      <td className='w-[15%]'>
+                        <Button 
+                          onClick={() => startTranslationReport(groupId, reportId)}
+                          disabled={
+                            !(reportId - 1 <= lastTranslatedReportId)
                           }
-                        />
-                      </td>
-                      <td>
-                        <ProgressBar
-                          striped
-                          animated
-                          className="custom-progress-bar"
-                          now={reportDetail.translatedSentencesProgressReport || 0}
-                          label={`${Math.round(reportDetail.translatedSentencesProgressReport || 0)}%`}
-                          variant={
-                            Math.round(reportDetail.translatedSentencesProgressReport || 0) <= 33 ? 'danger' :
-                            Math.round(reportDetail.translatedSentencesProgressReport || 0) <= 99 ? 'warning' :
-                            'success'
-                          }
-                        />
-                      </td> */}
-                      <td>
-                        <Button onClick={() => startTranslationReport(groupId, reportId)}>Traducir</Button>
+                        >
+                          Traducir
+                        </Button>
                       </td>
                     </tr>
                   );

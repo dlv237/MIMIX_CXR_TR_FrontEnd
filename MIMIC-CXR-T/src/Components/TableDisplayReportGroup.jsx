@@ -1,6 +1,5 @@
 import { useState, useContext} from 'react';
 import { Button, Alert} from 'react-bootstrap';
-import './tabledisplayreportgroup.css';
 import { deleteReportGroupReport } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 import ModalReport from './ModalReport';

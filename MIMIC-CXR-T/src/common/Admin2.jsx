@@ -75,7 +75,7 @@ function Admin2() {
   }, [user, navigate]);
 
   const navigationItems = [
-    { name: "Ver o eliminar grupos de reportes", eventKey: "first" },
+    { name: "Agregar o eliminar grupos de reportes", eventKey: "first" },
     { name: "Asociar usuario a grupo de reportes", eventKey: "second" },
     { name: "Ver lista de usuarios registrados", eventKey: "third" },
     { name: "Registro de usuarios", eventKey: "fifth" },

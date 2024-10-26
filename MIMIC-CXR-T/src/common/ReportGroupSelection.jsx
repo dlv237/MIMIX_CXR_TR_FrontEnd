@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Row, Button, Table, ProgressBar } from 'react-bootstrap';
+import { Row, Button, Table } from 'react-bootstrap';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +36,6 @@ const ReportGroupSelection = () => {
       if (response) {
         const totalReports = await getReportGroupReportsLength(reportGroupId, token);
         let lastTranslatedReportId = response.lastTranslatedReportId;
-        let progressReportGroup = response.progressReports;
         setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: lastTranslatedReportId ? (lastTranslatedReportId / totalReports) * 100 : 0 }));
         setLastTranslatedReportId(lastTranslatedReportId);
       }
@@ -110,7 +109,7 @@ const ReportGroupSelection = () => {
         <Table striped bordered hover variant="primary" responsive='sm' className="custom-table">
           <thead>
             <tr>
-              <th className="w-10" onClick={() => handleColumnHeaderClick('id')}>
+              <th className="w-28" onClick={() => handleColumnHeaderClick('id')}>
                 ID {sortColumn === 'id' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
               </th>
               <th className="w-50" onClick={handleProgressColumnHeaderClick}>
@@ -125,7 +124,7 @@ const ReportGroupSelection = () => {
           <tbody>
             {sortGroups().map((group, index) => (
               <tr key={index}>
-                <td className="w-10">{group.id}</td>
+                <td className="w-28">{group.id}</td>
                 <td className="w-50">
                   {Math.round(reportProgress[group.id])}%
                   <div className="overflow-hidden rounded-full bg-gray-200">
@@ -135,7 +134,7 @@ const ReportGroupSelection = () => {
                 <td className="w-50">
                   {(group.createdAt).slice(8,10)+(group.createdAt).slice(4,8)+(group.createdAt).slice(0,4)}
                 </td>
-                {/* Otros datos de la fila si los hay */}
+
                 <td className="w-50">
                   <Button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className='rounded-lg'>Traducir</Button>
                 </td>
