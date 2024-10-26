@@ -92,43 +92,43 @@ const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGr
       <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>Asociación generada con éxito.</Alert>
       <div className='form-batch-users'> 
         <Form.Group controlId="formGroupReportGroupId">
-              <Form.Label>Asociar usuarios a grupo de reportes</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ingrese batch Id"
-                name="reportGroupId"
-                value={userReportGroupData.reportGroupId}
-                onChange={handleInputChange}
-              />
+          <Form.Label>Asociar usuarios a grupo de reportes</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingrese batch Id"
+            name="reportGroupId"
+            value={userReportGroupData.reportGroupId}
+            onChange={handleInputChange}
+          />
         </Form.Group>
         <Button className="button-send"onClick={handleSendClick}>Asociar</Button>
       </div>
 
       <Col md={{offset: 1 }}>
-          <Table striped  hover>
-            <thead>
-              <tr>
-                <th>Batch Id</th>
-                <th>Usuarios asociados</th>
+        <Table striped  hover>
+          <thead>
+            <tr>
+              <th className='w-[30%]'>Batch Id</th>
+              <th className='w-[70%]'>Usuarios asociados</th>
+            </tr>
+          </thead>
+          <tbody>
+            {updatedReports.map((reportGroupReport) => (
+              <tr key={reportGroupReport.id}>
+                <td className='w-[30%]'>{reportGroupReport.id}</td>
+                <td className='w-[70%]'>
+                  {reportGroupReport.users && reportGroupReport.users.length > 0 ? (
+                    reportGroupReport.users.map((user) => (
+                      <div key={user}>{user}</div>
+                    ))
+                  ) : (
+                    'No users'
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {updatedReports.map((reportGroupReport) => (
-                <tr key={reportGroupReport.id}>
-                  <td>{reportGroupReport.id}</td>
-                  <td>
-                    {reportGroupReport.users && reportGroupReport.users.length > 0 ? (
-                      reportGroupReport.users.map((user) => (
-                        <div key={user}>{user}</div>
-                      ))
-                    ) : (
-                      'No users'
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+            ))}
+          </tbody>
+        </Table>
       </Col>
 
       <Col>

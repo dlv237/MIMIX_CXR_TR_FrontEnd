@@ -315,7 +315,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
         </Row>
         <Row>
         <Col>
-          <h3><Badge bg="secondary" className="badge-report">ID Reporte: {currentIndex}</Badge></h3>
+          <h3><Badge bg="secondary" className="badge-report">Reporte: {currentIndex + 1} de {reportsLenght}</Badge></h3>
         </Col>
         </Row>
         <Row>

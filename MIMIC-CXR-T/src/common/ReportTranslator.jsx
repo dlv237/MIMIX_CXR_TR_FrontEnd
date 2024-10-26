@@ -88,7 +88,7 @@ function ReportTranslator() {
     try {
       const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
       if (isCurrentReportCompleted.completed) {
-        navigate(`/translator/${groupId}/report/${report.report.reportId}`);
+        navigate(`/translator/${groupId}/report/${report.report.index+1}`);
       } else {
         setShowAlert(true);
         setTimeout(() => {

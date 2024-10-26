@@ -128,21 +128,21 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
       <table className="w-96 divide-y divide-gray-300 mt-20  justify-self-center">
         <thead>
           <tr>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0">Batch Id</th>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0">Reportes</th>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0">Eliminar Grupo</th>
+            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[25%]">Batch Id</th>
+            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[35%]">Reportes</th>
+            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[40%]">Eliminar Grupo</th>
           </tr>
         </thead>
         <tbody>
           {updatedReports.map((reportGroupReport) => (
             <tr key={reportGroupReport.id}>
-              <td>{reportGroupReport.id}</td>
-              <td>
+              <td className='w-[25%]'> {reportGroupReport.id}</td>
+              <td className='w-[35%]'>
                 <a href="#" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleShowModal(reportGroupReport)}>
                   Ver detalles
                 </a>
               </td>
-              <td>
+              <td className='w-[40%]'>
                 <a href="#" className="text-red-600 hover:text-red-900 cursor-pointer" onClick={() => handleShowModalDelete(reportGroupReport)}>
                   Eliminar
                 </a>

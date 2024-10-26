@@ -23,6 +23,7 @@ const TableUserDisplayReportGroup = () => {
       setLoading(true); 
       try {
         const dataReports = await getReportGroupReports(groupId, token);
+        dataReports.sort((a, b) => a.report.index - b.report.index);
         setReports(dataReports);
         const reportDetailsObject = {};
 
@@ -124,7 +125,7 @@ const TableUserDisplayReportGroup = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th className='w-[12%]'>Report IDs</th>
+                  <th className='w-[12%]'>N° Reporte</th>
                   <th className='w-[73%]'>Contenido</th>
                   {/* <th>Progreso reportes</th>
                   <th>Progreso oraciones traducidas</th> */}
@@ -135,16 +136,17 @@ const TableUserDisplayReportGroup = () => {
                 {reports.map((report) => {
                   const reportId = report.report.reportId;
                   const reportDetail = reportDetails[reportId] || {};
+                  console.log(report);
 
                   return (
                     <tr key={report.report.index}>
-                      <td className='w-[12%]'>{reportId}</td>
+                      <td className='w-[12%]'>{report.report.index}</td>
                       <td className='w-[73%] text-start'>{reportDetail.content || ''}</td>
                       <td className='w-[15%]'>
                         <Button 
-                          onClick={() => startTranslationReport(groupId, reportId)}
+                          onClick={() => startTranslationReport(groupId, report.report.index+1)}
                           disabled={
-                            !(reportId - 1 <= lastTranslatedReportId)
+                            !(report.report.index <= lastTranslatedReportId)
                           }
                         >
                           Traducir

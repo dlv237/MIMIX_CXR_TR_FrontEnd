@@ -40,21 +40,19 @@ const DisplayUsers = ({allUsers, onDeleteUser}) => {
         Usuario eliminado exitosamente
       </Alert>
 
-      <table className="min-w-full divide-y divide-gray-300">
+      <table className="min-w-full divide-y divide-gray-300 text-start">
         <thead>
           <tr>
-            <th scope="col" className="py-3.5 pl-4 pr-3 w-40 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-              style={{ width: '15rem' }}  
-            >
+            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 w-[10%]" >
               User ID
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-[25%]">
               Name
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-[15%]">
               Role
               </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-[50%]">
               Email
             </th>
             <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
@@ -66,16 +64,14 @@ const DisplayUsers = ({allUsers, onDeleteUser}) => {
         <tbody className="divide-y divide-gray-200">
           {users.map((user) => (
             <tr key={user.id}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 w-40 text-sm font-medium text-gray-900 sm:pl-0"
-                style={{ width: '15rem' }}
-              >
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 w-[10%]" >
                 {user.id}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.firstName} {user.lastName}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.role}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.email}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 w-[25%]" >{user.firstName} {user.lastName}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 w-[15%]">{user.role}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 w-[35%]">{user.email}</td>
               
-              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 w-[15%]">
                 <a className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleShowModalDelete(user)}>
                   Borrar Usuario
                 </a>
