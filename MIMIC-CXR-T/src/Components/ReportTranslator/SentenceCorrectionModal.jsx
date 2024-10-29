@@ -12,7 +12,7 @@ import {
   deleteUserCorrectionsTranslatedSentence,
 } from '../../utils/api';
 import '../../utils/modalScripts';
-import WordSelector from '../WordSelector';
+import WordSelector from './WordSelector';
 import '../modal.css';
 import ModalHeaderCorrecction from './ModalHeaderCorrecction';
 

@@ -1,16 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Table, ToggleButton, Form, Container, Row, Col, OverlayTrigger, Tooltip, Badge, Button } from 'react-bootstrap';
+import { useState, useContext, useEffect } from 'react';
+import { Table, Form, Container, Row, Col, OverlayTrigger, Tooltip, Badge, Button } from 'react-bootstrap';
 import './viewer.css';
-import ModalSuggestions from './ModalSuggestionCorrecction/ModalSuggestionCorrecctions2';
+import ModalSuggestions from './SentenceCorrectionModal';
+import ReportSentencesTable from '../ReportTranslator/ReportSentencesTable';
 
 import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
-  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getIsReportCompleted } from '../utils/api';
-import { AuthContext } from '../auth/AuthContext';
+  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getIsReportCompleted } from '../../utils/api';
+import { AuthContext } from '../../auth/AuthContext';
 
-function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculation, currentIndex, goToNextReport, goToPreviousReport }) {
+function Viewer({ 
+  groupId, 
+  report, 
+  currentIndex, 
+  goToNextReport, 
+  goToPreviousReport, 
+}) {
   const [translatedSentencesState, setTranslatedSentencesState] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTranslatedSentenceId, setSelectedTranslatedSentenceId] = useState(null);
@@ -33,8 +38,6 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
     } else {
       await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
     }
-
-    triggerProgressTranslatedSentencesRecalculation();
   };
 
   const handleCloseWithoutSave = async () => {
@@ -122,7 +125,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           loadUserSuggestion(translatedsentence);
         });
       });
-
+      
       setTranslatedSentencesState((prev) => ({ ...prev, ...updatedState }));
     }
   }, [report, token]);
@@ -178,93 +181,24 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
       setSelectedTranslatedSentenceId(translatedSentences.id);
       setIsModalOpen(true);
     }
-
-    triggerProgressTranslatedSentencesRecalculation();
   };
 
 
   function ReportTable({ report }) {
     const renderRows = (report) => {
-      const originalSentences = report.sentences;
-      const translatedSentences = report.translated_sentences;
-      if (originalSentences == null || translatedSentences == null) {
-        return null;
-      }
-
-      const types = ["background", "findings", "impression"];
-      return types.map((type) => {
-        const nonEmptyOriginalSentences = originalSentences[type].filter((sentence) => sentence.text.trim() !== "");
-        const nonEmptyTranslatedSentences = translatedSentences[type].filter((sentence) => sentence.text.trim() !== "");
-
-        if (nonEmptyOriginalSentences.length === 0 && nonEmptyTranslatedSentences.length === 0) {
-          return null;
-        }
-        return (
-          <React.Fragment key={type}>
-            {isSwitchChecked && (
-              <tr className="title-row">
-                <th className="title-row">{type}</th>
-                <th className="title-row"></th>
-                <th className="title-row w-[100%]"></th>
-              </tr>
-            )}
-            {nonEmptyOriginalSentences.map((sentence, index) => {
-              const translatedSentenceId = translatedSentences[type][index].id;
-              const isChecked = translatedSentencesState[translatedSentenceId] === true;
-              const suggestionAvailable = suggestionData[translatedSentenceId] !== undefined;
-              const isCrossed = suggestionAvailable && (isChecked === false);
-              const notReviewed = translatedSentencesState[translatedSentenceId] === null;
-
-              return (
-                <tr key={index}>
-                  <td className='w-[45%]'>{sentence.text}</td>
-                  <td className='w-[45%]'>
-                    {notReviewed ? (
-                      <p>{nonEmptyTranslatedSentences[index]?.text}</p>
-                    ) : (
-                      <>
-                        {isCrossed || isCrossedSentences[translatedSentenceId] ? (
-                          <p style={{ textDecoration: 'line-through', color: 'red' }}>
-                            {nonEmptyTranslatedSentences[index]?.text || ''}
-                          </p>
-                        ) : (
-                          nonEmptyTranslatedSentences[index]?.text || ''
-                        )}
-                        <br />
-                        <p style={{ color: 'green' }}>
-                          {isCrossed && suggestionAvailable ? suggestionData[translatedSentenceId] : sentencesSuggestions[translatedSentenceId] || ''}
-                        </p>
-                      </>
-                    )}
-                  </td>
-                  <td className="button-row">
-                    <ToggleButton
-                      size="sm"
-                      type="checkbox"
-                      variant={isChecked ? 'success' : 'outline-success'}
-                      onClick={() => handleTranslatedSentenceClick(translatedSentences[type][index], true)}
-                      className="custom-toggle-button times"
-                      id={`check-${translatedSentenceId || index}`}
-                    >
-                      <FontAwesomeIcon icon={faCheck} />
-                    </ToggleButton>
-                    <ToggleButton
-                      size="sm"
-                      type="checkbox"
-                      variant={translatedSentencesState[translatedSentenceId] === false ? 'danger' : 'outline-danger'}
-                      onClick={() => handleTranslatedSentenceClick(translatedSentences[type][index], false)}
-                      className="custom-toggle-button check"
-                      id={`times-${translatedSentenceId || index}`}
-                    >
-                      <FontAwesomeIcon icon={faTimes} />
-                    </ToggleButton>
-                  </td>
-                </tr>
-              );
-            })}
-          </React.Fragment>
-        );
-      });
+      return (
+        <>
+          <ReportSentencesTable
+            report={report}
+            isCrossedSentences={isCrossedSentences}
+            isSwitchChecked={isSwitchChecked}
+            translatedSentencesState={translatedSentencesState}
+            suggestionData={suggestionData}
+            sentencesSuggestions={sentencesSuggestions}
+            handleTranslatedSentenceClick={handleTranslatedSentenceClick}
+          />
+        </>
+      )
     };
 
     return (
@@ -279,7 +213,7 @@ function Viewer({ groupId, report, triggerProgressTranslatedSentencesRecalculati
           >
           <div>
             <h4 className="sr-only text-lg">Status</h4>
-            <p className="text-lg font-medium text-gray-900 mt-3">{(progressReports).toFixed(1)}% completado</p>
+            <p className="text-lg font-medium text-gray-900 mt-3">{(progressReports).toFixed(1)}% reportes completados del batch</p>
             <div aria-hidden="true" className="mt-6">
             <div className="overflow-hidden rounded-full bg-gray-200 m-6">
               <div

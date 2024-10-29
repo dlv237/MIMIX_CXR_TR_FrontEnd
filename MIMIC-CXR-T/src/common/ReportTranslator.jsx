@@ -1,14 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
-import Viewer from '../Components/Viewer';
+import Viewer from '../Components/ReportTranslator';
 import './translator.css';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
-import { Container, Col, Row, Alert } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 import {
   getIsReportCompleted, getReportGroupReportsLength, getReportFromGroupReports
 } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 function ReportTranslator() {
   const { token } = useContext(AuthContext);
@@ -16,15 +17,8 @@ function ReportTranslator() {
   const [report, setReport] = useState({});
   const [reportsLength, setReportsLength] = useState(0);
 
-  const [showAlert, setShowAlert] = useState(false);
-  const dismissDelay = 1400;
   const navigate = useNavigate();
-
   
-  const closeGeneralAlert = () => {
-    setShowAlert(false);
-  };
-
   useEffect(() => {
     const fetchReport = async () => {
       try {
@@ -90,10 +84,7 @@ function ReportTranslator() {
       if (isCurrentReportCompleted.completed) {
         navigate(`/translator/${groupId}/report/${report.report.index+1}`);
       } else {
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, dismissDelay);
+        toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
       }
     } catch (error) {
       console.error('Error checking report completion:', error);
@@ -111,19 +102,6 @@ function ReportTranslator() {
     <>
       <NavBarReportSelection />
         <Container className="translator-container">
-          <Row>
-            <Col>
-              <Alert 
-                show={showAlert} 
-                variant="danger" 
-                onClose={closeGeneralAlert} 
-                dismissible
-                className="custom-alert"
-              >
-                El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.
-              </Alert>
-            </Col>
-          </Row>
           <Row>
             <Col >
               {report.report && report.report.sentences?  (
