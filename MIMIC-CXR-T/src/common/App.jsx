@@ -4,9 +4,9 @@ import MyNavBar from '../Components/Nav';
 function App() {
 
   return (
-    <div className="App-page">
-      <MyNavBar />
-      <main>
+    <div className="h-[90vh]">
+      <MyNavBar/>
+      <main className='h-[76.2%]'>
         <section className="left-section">
           <h1>Proyecto MIMIC-CXR-Translation</h1>
           <p>
@@ -19,7 +19,7 @@ function App() {
           <p>Multimodal, multitask and transfer learning for Deep radiological report generation</p>
         </section>
       </main>
-      <footer>
+      <footer className='h-[15%] flex flex-col justify-center'>
         <p>© 2023 Todos los derechos reservados.</p>
       </footer>
     </div>

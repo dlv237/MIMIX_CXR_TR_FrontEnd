@@ -1,13 +1,12 @@
 import { useState, useContext } from 'react';
-import { Alert } from 'react-bootstrap';
 import { deleteUser } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 import ModalConfirmDelete from './ModalConfirmDelete';
+import toast from 'react-hot-toast';
 
 const DisplayUsers = ({allUsers, onDeleteUser}) => {
  
   const [selectedUser, setSelectedUser] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const { token } = useContext(AuthContext);
 
@@ -17,7 +16,7 @@ const DisplayUsers = ({allUsers, onDeleteUser}) => {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(selectedUser.id, token);
-      setShowAlert(true);
+      toast.success('Usuario eliminado correctamente');
       onDeleteUser(selectedUser.id);
       setShowModalDelete(false);
     } catch (error) {
@@ -36,9 +35,6 @@ const DisplayUsers = ({allUsers, onDeleteUser}) => {
 
   return (
     <div className='m-16'>
-      <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>
-        Usuario eliminado exitosamente
-      </Alert>
 
       <table className="min-w-full divide-y divide-gray-300 text-start">
         <thead>

@@ -20,7 +20,7 @@ const ReportGroupSelection = () => {
 
   const handleSelectButtonClick = async (groupId) => {
     try {
-      navigate(`/translator/${groupId}/report/${lastTranslatedReportId}`); // Navegar a la ruta con groupId y reportId
+      navigate(`/translator/${groupId}/report/${lastTranslatedReportId}`);
     } catch (error) {
       console.error('Error fetching reports for group:', error);
     }

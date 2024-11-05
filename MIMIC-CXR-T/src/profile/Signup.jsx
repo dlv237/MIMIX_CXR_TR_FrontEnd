@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './Login.css'; 
+import toast from 'react-hot-toast';
 
 function Signup({getUsers}) {
   const [firstName, setFirstName] = useState("");
@@ -8,16 +9,13 @@ function Signup({getUsers}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [role, setRole] = useState("User");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      setPasswordError("Las contraseñas no coinciden");
+      toast.error('Las contraseñas no coinciden');
       return;
     }
 
@@ -28,21 +26,16 @@ function Signup({getUsers}) {
       email: email,
       password: password
     }).then(() => {
-      setError(false);
-      setMsg('Usuario registrado correctamente');
-      setPasswordError("");
+      toast.success('Usuario registrado correctamente');
       getUsers();
     }).catch((error) => {      
-      console.error('Ocurrió un error:', error);
-      setError(true);
+      console.error('Error signing up:', error);
+      toast.error('Error al registrar usuario');
     });
   }
 
   return (
       <div className="">
-        {msg.length > 0 && <div className="successMsg"> {msg} </div>}
-        {error && <div className="error">Hubo un error con el Registro, por favor trata nuevamente.</div>}
-        {passwordError && <div className="error">{passwordError}</div>}
         
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">

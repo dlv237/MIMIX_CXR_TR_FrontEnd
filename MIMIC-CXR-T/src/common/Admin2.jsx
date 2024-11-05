@@ -27,7 +27,6 @@ function Admin2() {
     try {
       const response = await getAllReportGroupReports(token);
       setReportGroupReports(response);
-      console.log(response);
     } catch (error) {
       console.error('Error fetching reportGroupReports:', error);
     } 
@@ -44,7 +43,6 @@ function Admin2() {
   const handleCreateUserReportGroup = async (userReportGroupData) => {
     try {
       const response = await createUserReportGroups(userReportGroupData, token);
-      console.log("La respuesta de la creación de usuario en grupo de reportes es:", response);
       return response;
     } catch (error) {
       console.error('Error creating user report group:', error);
@@ -56,7 +54,6 @@ function Admin2() {
     try {
       const usersData = await getAllUsers(token);
       setUsers(usersData);
-      console.log(usersData);
     } catch (error) {
       console.error('Error fetching users:', error);
     }

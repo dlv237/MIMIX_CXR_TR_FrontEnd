@@ -1,13 +1,13 @@
 import { useState, useContext } from 'react';
-import { Button, Modal, Alert } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { AuthContext } from '../auth/AuthContext';
 import { createReportBatch } from '../utils/api';
+import toast from 'react-hot-toast';
 
 const ModalUploadReport = ({getReportGroupReports}) => {
   const [showModal, setShowModal] = useState(false);
   const [fileContent, setFileContent] = useState('');
   const { token } = useContext(AuthContext);
-  const [showAlert, setShowAlert] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -49,7 +49,7 @@ const handleAccept = async (event) => {
   try {
     await createReportBatch(fileContent, token);
     handleCloseModal(); 
-    setShowAlert(true);   
+    toast.success('Reporte creado correctamente');
     getReportGroupReports();
   } catch (error) {
     console.error('Error saving file content:', error);
@@ -59,9 +59,6 @@ const handleAccept = async (event) => {
 
   return (
     <>
-      <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>
-          Batch creado exitosamente
-      </Alert>
       <Button variant="primary" onClick={handleLoadFile}>
         Cargar Reporte
       </Button>

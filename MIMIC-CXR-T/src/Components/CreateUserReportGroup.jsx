@@ -1,16 +1,13 @@
 import { useState, useContext } from 'react';
-import { Form, Button, ListGroup, Table, Col, Row, Alert  } from 'react-bootstrap';
+import { Form, Button, ListGroup, Table, Col, Row  } from 'react-bootstrap';
 import { AuthContext } from '../auth/AuthContext';
-
+import toast from 'react-hot-toast';
 
 import './CreateUserReportGroup.css';
 
 const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGroupReports, getReportGroupReports}) => {
 
   const { token } = useContext(AuthContext);
-  const [showAlert, setShowAlert] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
   const [userReportGroupData, setUserReportGroupData] = useState({
     reportGroupId: '',
     userIds: [],
@@ -46,16 +43,12 @@ const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGr
   const handleSendClick = async () => {
 
     if (!userReportGroupData.reportGroupId) {
-      setErrorMsg('Debe ingresar un ID de grupo de reporte.');
-      setShowError(true);
-      setShowAlert(false);
+      toast.error('Debe ingresar un ID de grupo de reporte.');
       return;
     }
 
     if (userReportGroupData.userIds.length === 0) {
-      setErrorMsg('Debe seleccionar al menos un usuario.');
-      setShowError(true);
-      setShowAlert(false);
+      toast.error('Debe seleccionar al menos un usuario.');
       return;
     }
 
@@ -66,21 +59,14 @@ const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGr
         userIds: userReportGroupData.userIds.map((id) => Number(id)),
       };
       const response = await handleCreateUserReportGroup(requestBody, token);
-      console.log("La respuesta de la creación de usuario en grupo de reportes es:", response);
       if (response.status === 201) {
         getReportGroupReports();
-        setShowAlert(true);
-        setShowError(false);
+        toast.success('Usuarios asociados exitosamente');
       } else {
-        setErrorMsg(response.data.error);
-        setShowError(true);
-        setShowAlert(false);
+        toast.error('Error al asociar usuarios');
       }
     } catch (error) {
-      console.log('Error creating user report group:', error);
-      setErrorMsg(error.response.data.error);
-      setShowError(true);
-      setShowAlert(false);
+      toast.error('Error al asociar usuarios');
     }
   };
 
@@ -88,8 +74,6 @@ const CreateUserReportGroup = ({ handleCreateUserReportGroup, allUsers, reportGr
   return (
     <div className='w-fit justify-self-center'>
       <Row>
-      <Alert show={showError} variant="danger" onClose={() => setShowError(false)} dismissible>{errorMsg}</Alert>
-      <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>Asociación generada con éxito.</Alert>
       <div className='form-batch-users'> 
         <Form.Group controlId="formGroupReportGroupId">
           <Form.Label>Asociar usuarios a grupo de reportes</Form.Label>

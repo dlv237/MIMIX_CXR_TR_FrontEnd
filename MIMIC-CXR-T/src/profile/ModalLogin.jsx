@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom'; 
+import toast from 'react-hot-toast';
 
 
 function ModalLogin() {
@@ -15,11 +16,9 @@ function ModalLogin() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const { token, setToken } = useContext(AuthContext);
+  const { setToken } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [msg, setMsg] = useState('');
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,25 +29,17 @@ function ModalLogin() {
         password: password,
       })
       .then((response) => {
-        console.log('Login successful');
-        setError(false);
-        setMsg('Login exitoso!');
-        // Recibimos el token y lo procesamos
+        toast.success('Inicio de sesión exitoso');
         const access_token = response.data.access_token;
         localStorage.setItem('token', access_token);
         setToken(access_token);
-        //console.log('Se seteo el token: ', token, access_token);
 
-        // Cerrar el modal después del login exitoso
         handleClose();
-
-        // Redirige a la vista para seleccionar reportes a traducir 
-        // después del inicio de sesión
         navigate('/reportselection');
       })
       .catch((error) => {
         console.error('An error occurred while trying to login:', error);
-        setError(true); // aquí puede haber más lógica para tratar los errores
+        toast.error('Credenciales incorrectas');
       });
   };
 
@@ -64,6 +55,7 @@ function ModalLogin() {
         onHide={handleClose} 
         backdrop="static" 
         keyboard={false}
+        className='mt-32'
       >
         <Modal.Header closeButton>
           <Modal.Title>Iniciar Sesión</Modal.Title>
@@ -99,13 +91,14 @@ function ModalLogin() {
                 />
               </Col>
             </Form.Group>
-
-            <Button variant="secondary" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleSubmit} type="submit">
-              Enviar
-            </Button>
+            <div className='p-1'>
+              <Button variant="secondary" onClick={handleClose} className='mr-4'>
+                Cancelar
+              </Button>
+              <Button variant="primary" onClick={handleSubmit} type="submit">
+                Iniciar Sesión
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>

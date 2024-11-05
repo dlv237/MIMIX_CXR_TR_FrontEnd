@@ -1,11 +1,12 @@
 import { useState, useContext} from 'react';
-import { Button, Alert} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { deleteReportGroupReport } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 import ModalReport from './ModalReport';
 import ModalConfirmDelete from './ModalConfirmDelete';
 import { Modal } from 'react-bootstrap';
 import { createReportBatch } from '../utils/api';
+import toast from 'react-hot-toast';
 
 
 const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getReportGroupReports }) => {
@@ -13,11 +14,9 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
   const [showModal, setShowModal] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
   const updatedReports = reportGroupReports;
   const [showFileModal, setShowFileModal] = useState(false);
   const [fileContent, setFileContent] = useState('');
-  const [showUploadAlert, setShowUploadAlert] = useState(false);
 
   const handleShowModal = (report) => {
     setSelectedReport(report);
@@ -64,7 +63,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     try {
       await createReportBatch(fileContent, token);
       handleCloseUploadModal(); 
-      setShowAlert(true);   
+      toast.success('Batch de reportes cargado exitosamente');
       getReportGroupReports();
     } catch (error) {
       console.error('Error saving file content:', error);
@@ -88,7 +87,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     try {
       await deleteReportGroupReport(selectedReport.id, token);
       onDeleteReportGroup(selectedReport.id);
-      setShowAlert(true);
+      toast.success('Batch de reportes eliminado exitosamente');
     } catch (error) {
       console.error('Error deleting report group report:', error);
     } finally {
@@ -99,12 +98,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
 
   return (
     <> 
-      <Alert show={showAlert} variant="success" onClose={() => setShowAlert(false)} dismissible>
-        Batch eliminado exitosamente 
-      </Alert>
-      <Alert show={showUploadAlert} variant="success" onClose={() => setShowUploadAlert(false)} dismissible>
-          Batch creado exitosamente
-      </Alert>
       
       <div className="sm:flex sm:items-center justify-self-center" 
         style={{width: '90%'}}

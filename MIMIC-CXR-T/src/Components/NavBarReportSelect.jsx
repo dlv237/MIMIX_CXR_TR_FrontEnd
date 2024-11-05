@@ -13,7 +13,6 @@ const NavBarReportSelection = () => {
     const fetchUser = async () => {
       try {
         const response = await getUser(token);
-        //console.log('Response:', response);
         setUser(response);
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -26,7 +25,7 @@ const NavBarReportSelection = () => {
 
 
   return (
-    <Navbar bg="dark" data-bs-theme="dark" expand="lg">
+    <Navbar bg="dark" data-bs-theme="dark">
       <Navbar.Brand>MIMIC-CXR</Navbar.Brand>
       <Nav className="ml-auto">
         <Nav.Link href="/mimix-cxr-tr/reportselection">

@@ -48,7 +48,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
   };
 
   const loadPreviousSuggestionData = async (selectedTranslatedSentenceId) => {
-    console.log("loadPreviousSuggestionData from modal")
     try {
       const previousSuggestionResponse = await getPreviousUserSuggestion(selectedTranslatedSentenceId, token);
       if (previousSuggestionResponse) {
@@ -192,7 +191,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
       }
       onSave(editedTranslatedSentence);
       onHide();
-      console.log("selectedTranslatedSentenceId: modal, ", selectedTranslatedSentenceId)
       loadPreviousSuggestionData(selectedTranslatedSentenceId);
     } catch (error) {
       console.error('Error saving modal:', error);

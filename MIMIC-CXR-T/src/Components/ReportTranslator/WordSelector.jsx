@@ -15,8 +15,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     const filteredInitialSelectedWords = initialSelectedWords.filter(word => word.type === mapVariantToType(variant));
     setSelectedWords(filteredInitialSelectedWords);
     highlightInitialSelectedWords(filteredInitialSelectedWords);
-    console.log("inicial", filteredInitialSelectedWords);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSelectedWords]);
 
   useEffect(() => {
@@ -135,7 +133,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     });
   
     setSelectedWords(updatedSelectedWords);
-    console.log(updatedSelectedWords);
   };
 
   const handleUndoSelection = () => {
@@ -145,7 +142,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   useEffect(() => {
     if (selectedWords.length === 0) {
       unhighlightWords();
-      console.log(selectedWords);
     }
   }, [selectedWords]);
 

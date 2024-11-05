@@ -56,28 +56,6 @@ function ReportTranslator() {
   }, [groupId, token]);
   
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        fetchUserTranslatedSentences(groupId);
-    
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
-    fetchData();
-  }, [groupId, token]);
-
-
-  const fetchUserTranslatedSentences = async (groupId) => {
-    try {
-      console.log(groupId);
-    } catch (error) {
-      console.error('Error fetching reviewed phrases:', error);
-    }
-  };
-
   const goToNextReport = async () => {
     try {
       const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);

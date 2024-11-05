@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { Table, Button, Col, Container, Row, Spinner, Pagination } from 'react-bootstrap';
 import NavBarReportSelection from './NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
-import { getReportGroupReports, getReportById, getUserReportGroup } from '../utils/api';
+import { getReportGroupReports, getUserReportGroup, getReportGroupReportsLength } from '../utils/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getIsReportCompleted } from '../utils/api';
 import Tooltip from './Tooltip';
@@ -14,8 +14,8 @@ const TableUserDisplayReportGroup = () => {
   const [loading, setLoading] = useState(true);
   const { groupId } = useParams();
   const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
+  const [reportsLenght, setReportsLenght] = useState(0);
 
-  // Estado para la paginación
   const [currentPage, setCurrentPage] = useState(1);
   const reportsPerPage = 10;
 
@@ -25,18 +25,18 @@ const TableUserDisplayReportGroup = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const reportsLenghtData = await getReportGroupReportsLength(groupId, token);
+        setReportsLenght(reportsLenghtData);
         const dataReports = await getReportGroupReports(groupId, token);
         dataReports.sort((a, b) => a.report.index - b.report.index);
         setReports(dataReports);
         const reportDetailsObject = {};
 
         for (const report of dataReports) {
-          const reportId = report.report.reportId;
-          const reportContent = await getReportById(reportId, token);
-          const concatenatedString = reportContent.background + reportContent.findings + reportContent.impression;
+          const concatenatedString = report.report.content;
           const truncatedString = concatenatedString.slice(0, 150);
 
-          reportDetailsObject[reportId] = {
+          reportDetailsObject[report.report.reportId] = {
             content: truncatedString,
           };
         }
@@ -116,7 +116,7 @@ const TableUserDisplayReportGroup = () => {
               loadingSpinner
             ) : (
               <>
-                <h2 className='font-medium text-start pt-8 pb-4 text-2xl'>Reportes del batch numero {groupId}</h2>
+                <h2 className='font-medium text-start pt-8 pb-4 text-2xl mt-10'>Reportes del batch numero {groupId}</h2>
                 <Table striped bordered hover className="rounded">
                   <thead>
                     <tr>
@@ -129,22 +129,24 @@ const TableUserDisplayReportGroup = () => {
                     {currentReports.map((report) => {
                       const reportId = report.report.reportId;
                       const reportDetail = reportDetails[reportId] || {};
+                      const disabled = report.report.index > lastTranslatedReportId;
 
                       return (
                         <tr key={report.report.index}>
                           <td className="w-[12%]">{report.report.index}</td>
-                          <td className="w-[73%] text-start">{reportDetail.content || ''}</td>
+                          <td className="max-w-[73%] text-start">{reportDetail.content || ''}</td>
                           <td className="w-[15%]">
                             <Tooltip
                               message={
-                                report.report.index > lastTranslatedReportId
+                                disabled
                                   ? "Debes traducir el reporte anterior"
                                   : "Traducir este reporte"
                               }
                             >
                               <Button
                                 onClick={() => startTranslationReport(groupId, report.report.index + 1)}
-                                disabled={report.report.index > lastTranslatedReportId}
+                                disabled={disabled}
+                                variant={disabled ? 'secondary' : 'primary'}
                               >
                                 Traducir
                               </Button>
@@ -156,8 +158,8 @@ const TableUserDisplayReportGroup = () => {
                   </tbody>
                 </Table>
 
-                <Pagination>
-                  {[...Array(Math.ceil(reports.length / reportsPerPage)).keys()].map((number) => (
+                <Pagination className='mb-12'>
+                  {[...Array(Math.ceil(reportsLenght / reportsPerPage)).keys()].map((number) => (
                     <Pagination.Item key={number} active={number + 1 === currentPage} onClick={() => paginate(number + 1)}>
                       {number + 1}
                     </Pagination.Item>

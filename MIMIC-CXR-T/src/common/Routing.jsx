@@ -7,10 +7,17 @@ import ReportGroupSelection from '../common/ReportGroupSelection';
 import Admin2 from './Admin2';
 import TableUserDisplayReportGroup from '../Components/TableUserDisplayReportGroup';
 import AccessDenied from '../Components/AccessDenied';
+import { useEffect } from 'react';
 
 function Routing() {
+
+  useEffect(() => {
+    console.error = () => {};
+    console.warn = () => {};
+  }, []);
+
   return (
-    <BrowserRouter basename="/mimix-cxr-tr">
+    <BrowserRouter basename="/mimix-cxr-tr/">
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/tablereportgroup/:groupId" element={<TableUserDisplayReportGroup />} />
