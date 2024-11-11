@@ -45,8 +45,8 @@ function ReportSentencesTable({
             return (
               <tr key={index} className='px-3 py-1 h-auto' style={{ backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : ''}}
               >
-                <td className='w-[45%]'>{sentence.text}</td>
-                <td className='w-[45%]'>
+                <td className='w-[45%] pr-2'>{sentence.text}</td>
+                <td className='w-[45%] pl-2'>
                   {notReviewed ? (
                     <p>{nonEmptyTranslatedSentences[index]?.text}</p>
                   ) : (
