@@ -98,13 +98,21 @@ tr {
 }
 
 .custom-table tr:hover td:hover{
-  background-color: #e7fff6; /* Cambia el color de fondo a tu preferencia */
   transition: background-color 0.3s; /* Agrega una transición suave */
 }
 
 .custom-table th {
   background-color: #a0c1f3b7; /* Cambia el color de fondo a tu preferencia */
 }
+
+.custom-table tr:nth-child(odd) {
+  background-color: #f2f2f2; /* Color para filas impares */
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #ffffff; /* Color para filas pares */
+}
+
 
 .reports-progress-bar {
   width: 100%;

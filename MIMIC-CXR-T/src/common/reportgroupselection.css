@@ -1,7 +1,23 @@
 .custom-table {
-    margin-top: 20px; /* Ajusta el margen según tus necesidades */
-  }
-  
-  .custom-table th {
-    text-align: center; /* Centra el texto en las celdas de encabezado */
-  }
+  margin-top: 20px; /* Ajusta el margen según tus necesidades */
+  border-collapse: collapse; /* Colapsa los bordes de la tabla */
+  border-spacing: 0; /* Elimina el espacio entre los bordes de las celdas */
+}
+
+.custom-table th {
+  text-align: center; /* Centra el texto en las celdas de encabezado */
+  display: flex; /* Alinea el texto verticalmente en las celdas de encabezado */
+  align-items: center; /* Alinea el texto verticalmente en las celdas de encabezado */
+  justify-content: center; /* Centra el texto horizontalmente en las celdas de encabezado */
+}
+
+
+.custom-table tr:nth-child(odd) {
+  height: 3rem; /* Ajusta la altura de las filas según tus necesidades */
+  background-color: #ffffff; /* Color para filas impares */
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #ffffff; /* Color para filas pares */
+  height: 3rem;
+}

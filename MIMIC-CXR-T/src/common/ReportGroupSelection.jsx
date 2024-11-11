@@ -86,10 +86,8 @@ const ReportGroupSelection = () => {
 
   const handleColumnHeaderClick = (column) => {
     if (column === sortColumn) {
-      // Si se hace clic en la misma columna, cambiar la dirección
       setSortDirection((prevDirection) => (prevDirection === 'asc' ? 'desc' : 'asc'));
     } else {
-      // Si se hace clic en una nueva columna, cambiar la columna y establecer la dirección a ascendente
       setSortColumn(column);
       setSortDirection('asc');
     }
@@ -105,8 +103,8 @@ const ReportGroupSelection = () => {
     <div>
       <NavBarReportSelection />
       <h3>Selecciona un grupo de reportes a traducir:</h3>
-      <Row style={{width: '50rem', textAlignLast: 'center'}} className="justify-content-center">
-        <Table striped bordered hover variant="primary" responsive='sm' className="custom-table">
+      <Row style={{width: '50rem', textAlignLast: 'center', borderRadius: '0.5rem'}} className="justify-content-center rounded-lg">
+        <table className="custom-table divide-y divide-gray-200">
           <thead>
             <tr>
               <th className="w-28" onClick={() => handleColumnHeaderClick('id')}>
@@ -116,14 +114,13 @@ const ReportGroupSelection = () => {
                 Progreso {sortColumn === 'progress' && <span>{progressSortDirection === 'asc' ? '↑' : '↓'}</span>}
               </th>
               <th className="w-50">Fecha de creación</th>
-              {/* Otros encabezados de columnas si los hay */}
               <th className="w-50">Traducir</th>
               <th className="w-50">Ver Reportes</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-200"> 
             {sortGroups().map((group, index) => (
-              <tr key={index}>
+              <tr key={index} className='items-center'>
                 <td className="w-28">{group.id}</td>
                 <td className="w-50">
                   {Math.round(reportProgress[group.id])}%
@@ -136,15 +133,15 @@ const ReportGroupSelection = () => {
                 </td>
 
                 <td className="w-50">
-                  <Button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className='rounded-lg'>Traducir</Button>
+                  <button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className="rounded-md bg-indigo-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-100">Traducir</button>
                 </td>
                 <td className="w-50">
-                  <Button variant="secondary" onClick={() => viewTableUserDisplayReportGroup(group.id)} className='rounded-lg'>Reportes</Button>
+                  <button variant="secondary" onClick={() => viewTableUserDisplayReportGroup(group.id)} className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">Reportes</button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </Table>
+        </table>
       </Row>
     </div>
   );

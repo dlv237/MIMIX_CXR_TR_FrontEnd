@@ -187,7 +187,7 @@ function Viewer({
   function ReportTable({ report }) {
     const renderRows = (report) => {
       return (
-        <>
+        <div>
           <ReportSentencesTable
             report={report}
             isCrossedSentences={isCrossedSentences}
@@ -197,13 +197,13 @@ function Viewer({
             sentencesSuggestions={sentencesSuggestions}
             handleTranslatedSentenceClick={handleTranslatedSentenceClick}
           />
-        </>
+        </div>
       )
     };
 
     return (
       <>
-      <Container>
+      <Container className='min-h-[90vh]'>
         <Row>
         <Col>
           <OverlayTrigger
@@ -266,12 +266,13 @@ function Viewer({
           </Form>
         </Col>
         </Row>
-        <Row>
-        <Table striped hover responsive="lg" className="custom-table text-start">
-          <tbody className="custom-table">
-          {renderRows(report)}
+        <Row className='min-w-fit justify-self-center'>
+        <Table striped hover responsive="lg" className="custom-table text-start min-w-fit">
+          <tbody className="divide-y divide-gray-200">
+            {renderRows(report)}
           </tbody>
         </Table>
+
         </Row>
         <Row className='flex justify-center mb-6 mt-8'>
           <div className='flex justify-center w-9/12'>

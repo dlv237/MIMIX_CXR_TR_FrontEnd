@@ -97,7 +97,6 @@ const TableUserDisplayReportGroup = () => {
     </div>
   );
 
-  // Lógica para la paginación
   const indexOfLastReport = currentPage * reportsPerPage;
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
   const currentReports = reports.slice(indexOfFirstReport, indexOfLastReport);
@@ -134,7 +133,7 @@ const TableUserDisplayReportGroup = () => {
                       return (
                         <tr key={report.report.index}>
                           <td className="w-[12%]">{report.report.index}</td>
-                          <td className="max-w-[73%] text-start">{reportDetail.content || ''}</td>
+                          <td className="w-[73%] text-start">{reportDetail.content || ''}</td>
                           <td className="w-[15%]">
                             <Tooltip
                               message={

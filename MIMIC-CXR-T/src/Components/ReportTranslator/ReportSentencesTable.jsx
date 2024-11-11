@@ -27,10 +27,10 @@ function ReportSentencesTable({
         return null;
       }
       return (
-        <React.Fragment key={type}>
+        <table key={type} className='w-full min-w-[50rem]'>
           {isSwitchChecked && (
-            <tr className="title-row">
-              <th className="title-row">{type}</th>
+            <tr className="title-row w-full p-0">
+              <th className="title-row content-center pl-4">{type}</th>
               <th className="title-row"></th>
               <th className="title-row w-[100%]"></th>
             </tr>
@@ -43,7 +43,8 @@ function ReportSentencesTable({
             const notReviewed = translatedSentencesState[translatedSentenceId] === null;
 
             return (
-              <tr key={index}>
+              <tr key={index} className='px-3 py-1 h-auto' style={{ backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : ''}}
+              >
                 <td className='w-[45%]'>{sentence.text}</td>
                 <td className='w-[45%]'>
                   {notReviewed ? (
@@ -89,7 +90,7 @@ function ReportSentencesTable({
               </tr>
             );
           })}
-        </React.Fragment>
+        </table>
       );
     });
   }

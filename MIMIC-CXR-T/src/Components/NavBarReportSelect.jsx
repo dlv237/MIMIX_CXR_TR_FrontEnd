@@ -3,6 +3,8 @@ import { Navbar, Nav, Button } from 'react-bootstrap';
 import LogoutButton from '../profile/Logout';
 import { AuthContext } from '../auth/AuthContext';
 import { getUser }  from '../utils/api';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import HomeIcon from '@mui/icons-material/Home';
 
 const NavBarReportSelection = () => {
 
@@ -27,15 +29,23 @@ const NavBarReportSelection = () => {
   return (
     <Navbar bg="dark" data-bs-theme="dark">
       <Navbar.Brand>MIMIC-CXR</Navbar.Brand>
-      <Nav className="ml-auto">
-        <Nav.Link href="/mimix-cxr-tr/reportselection">
-          <Button variant="success">Home</Button>
-        </Nav.Link>
-        {user && user.role === 'Admin' && (
-          <Nav.Link href="/mimix-cxr-tr/admin">
-            <Button variant="primary">Vista Admin</Button>
+      <Nav className="ml-auto justify-between w-full">
+        <div className='flex'>
+          <Nav.Link href="/mimix-cxr-tr/reportselection">
+            <button className=' text-white bg-blue-800 text-center flex rounded-lg'>
+              <HomeIcon className='mr-2'/>
+              Home
+            </button>
           </Nav.Link>
-        )}
+          {user && user.role === 'Admin' && (
+            <Nav.Link href="/mimix-cxr-tr/admin">
+              <button className=' text-white bg-green-800 text-center flex'>
+                <AdminPanelSettingsIcon className='mr-2'/>
+                Admin
+              </button>
+            </Nav.Link>
+          )}
+        </div>
         <Nav.Link>
           <LogoutButton />
         </Nav.Link>
