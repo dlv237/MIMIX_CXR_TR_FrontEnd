@@ -59,9 +59,12 @@ function ReportTranslator() {
   const goToNextReport = async () => {
     try {
       const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
-      if (isCurrentReportCompleted.completed) {
+      if (isCurrentReportCompleted.completed && (reportsLenght === 0 || currentIndex === reportsLenght - 1)) {
         navigate(`/translator/${groupId}/report/${report.report.index+1}`);
-      } else {
+      } else if (isCurrentReportCompleted.completed) {
+        navigate('/reportselection');
+      } 
+      else {
         toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
       }
     } catch (error) {

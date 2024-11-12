@@ -284,14 +284,26 @@ function Viewer({
             >
               Reporte anterior
             </Button>
-            <Button
-              variant="primary"
-              onClick={handleNextReport}
-              disabled={reportsLenght === 0 || currentIndex === reportsLenght - 1}
-              className='w-2/5 mx-6'
-            >
-              Siguiente reporte
-            </Button>
+            {
+              reportsLenght === 0 || currentIndex === reportsLenght - 1 ? (
+                <Button
+                  variant="primary"
+                  onClick={handleNextReport}
+                  disabled={true}
+                  className='w-2/5 mx-6'
+                >
+                  Siguiente reporte
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  onClick={handleNextReport}
+                  className='w-2/5 mx-6'
+                >
+                  Finalizar reporte
+                </Button>
+              )
+            }
           </div>
           
         </Row>

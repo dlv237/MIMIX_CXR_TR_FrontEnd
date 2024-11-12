@@ -282,7 +282,7 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-1 border border-warning" >      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Si encuentra, <strong>&nbsp;selecciones&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
+                      <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
                       <Accordion.Body className="examples-text">
                         Ocurren cuando la traducción, si bien transmite el significado general del texto de origen, carece del flujo natural.
                         Este tipo de error puede hacer parecer forzada la traducción y no representan como un nativo en el idioma diría la frase correspondiente.<br/>
