@@ -59,7 +59,7 @@ function ReportTranslator() {
   const goToNextReport = async () => {
     try {
       const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
-      if (isCurrentReportCompleted.completed && (reportsLenght === 0 || currentIndex === reportsLenght - 1)) {
+      if (isCurrentReportCompleted.completed && !(reportsLenght === 0 || currentIndex === reportsLenght - 1)) {
         navigate(`/translator/${groupId}/report/${report.report.index+1}`);
       } else if (isCurrentReportCompleted.completed) {
         navigate('/reportselection');
