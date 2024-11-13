@@ -57,18 +57,17 @@ function ReportTranslator() {
   
 
   const goToNextReport = async () => {
-    try {
-      const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
-      if (isCurrentReportCompleted.completed && !(reportsLenght === 0 || currentIndex === reportsLenght - 1)) {
-        navigate(`/translator/${groupId}/report/${report.report.index+1}`);
-      } else if (isCurrentReportCompleted.completed) {
-        navigate('/reportselection');
-      } 
-      else {
-        toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
-      }
-    } catch (error) {
-      console.error('Error checking report completion:', error);
+    const currentIndex = report.report.index;
+    const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
+    if (isCurrentReportCompleted.completed && !(currentIndex === reportsLength - 1)) {
+      navigate(`/translator/${groupId}/report/${report.report.index+1}`);
+      window.scrollTo(0, 0);
+    } else if (isCurrentReportCompleted.completed) {
+      navigate('/reportselection');
+      window.scrollTo(0, 0);
+    } 
+    else {
+      toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
     }
   };
   

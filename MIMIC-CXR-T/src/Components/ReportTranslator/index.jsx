@@ -72,17 +72,12 @@ function Viewer({
   );
 
   const handleNextReport = async () => {
-    try {
-      const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
-      const newProgressByReports = calculateProgressByReports();
-      if ( currentIndex === lastTranslatedReportId && isCurrentReportCompleted.completed) {
-        await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
-      }
-      goToNextReport();
-      
-    } catch (error) {
-      console.error('Error updating progress:', error);
+    const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
+    const newProgressByReports = calculateProgressByReports();
+    if ( currentIndex === lastTranslatedReportId && isCurrentReportCompleted.completed) {
+      await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
     }
+    goToNextReport();
   };
 
   useEffect(() => {
@@ -236,26 +231,13 @@ function Viewer({
             >
               Reporte anterior
             </Button>
-            {
-              !(reportsLenght === 0 || currentIndex === reportsLenght) - 1 ? (
-                <Button
-                  variant="primary"
-                  onClick={handleNextReport}
-                  disabled={true}
-                  className='w-2/5 mx-6'
-                >
-                  Siguiente reporte
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  onClick={handleNextReport}
-                  className='w-2/5 mx-6'
-                >
-                  Finalizar reporte
-                </Button>
-              )
-            }
+            <Button
+              variant="primary"
+              onClick={handleNextReport}
+              className='w-2/5 mx-6'
+            >
+              {(reportsLenght === 0 || currentIndex === (reportsLenght - 1)) ? 'Finalizar reporte' : 'Siguiente reporte'}
+            </Button>
           </div>
           
         </Row>
@@ -296,26 +278,13 @@ function Viewer({
             >
               Reporte anterior
             </Button>
-            {
-              !(reportsLenght === 0 || currentIndex === reportsLenght) - 1 ? (
-                <Button
-                  variant="primary"
-                  onClick={handleNextReport}
-                  disabled={true}
-                  className='w-2/5 mx-6'
-                >
-                  Siguiente reporte
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  onClick={handleNextReport}
-                  className='w-2/5 mx-6'
-                >
-                  Finalizar reporte
-                </Button>
-              )
-            }
+            <Button
+              variant="primary"
+              onClick={handleNextReport}
+              className='w-2/5 mx-6'
+            >
+              {(reportsLenght === 0 || currentIndex === (reportsLenght - 1)) ? 'Finalizar reporte' : 'Siguiente reporte'}
+            </Button>
           </div>
           
         </Row>
