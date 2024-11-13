@@ -14,13 +14,13 @@ const ReportGroupSelection = () => {
   const [sortColumn, setSortColumn] = useState('id');
   const [sortDirection, setSortDirection] = useState('asc');
   const [progressSortDirection, setProgressSortDirection] = useState('asc');
-  const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
+  const [lastTranslatedReportId, setLastTranslatedReportId] = useState([]);
 
   const navigate = useNavigate();
 
   const handleSelectButtonClick = async (groupId) => {
     try {
-      navigate(`/translator/${groupId}/report/${lastTranslatedReportId}`);
+      navigate(`/translator/${groupId}/report/${lastTranslatedReportId[groupId]}`);
     } catch (error) {
       console.error('Error fetching reports for group:', error);
     }
@@ -37,7 +37,7 @@ const ReportGroupSelection = () => {
         const totalReports = await getReportGroupReportsLength(reportGroupId, token);
         let lastTranslatedReportId = response.lastTranslatedReportId;
         setReportProgress((prevProgress) => ({ ...prevProgress, [reportGroupId]: lastTranslatedReportId ? (lastTranslatedReportId / totalReports) * 100 : 0 }));
-        setLastTranslatedReportId(lastTranslatedReportId);
+        setLastTranslatedReportId((prevLastTranslatedReportId) => ({ ...prevLastTranslatedReportId, [reportGroupId]: lastTranslatedReportId }));
       }
       // Devuelve la promesa resultante
       return response;
