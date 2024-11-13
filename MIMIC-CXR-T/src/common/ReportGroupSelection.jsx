@@ -21,6 +21,7 @@ const ReportGroupSelection = () => {
 
   const handleSelectButtonClick = async (groupId) => {
     try {
+      console.log(lastTranslatedReportId[groupId], reportGroups.length);
       if (lastTranslatedReportId[groupId] + 1 < reportGroups.length) {
         navigate(`/translator/${groupId}/report/${lastTranslatedReportId[groupId]}`);
       } else {
