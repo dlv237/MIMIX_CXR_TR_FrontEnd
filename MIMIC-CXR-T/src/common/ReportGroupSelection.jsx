@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { getReportGroupsByUser, getUserReportGroup, getReportGroupReportsLength } from '../utils/api';
 
 import './reportgroupselection.css';
+import toast from 'react-hot-toast';
 
 const ReportGroupSelection = () => {
   const { token } = useContext(AuthContext);
@@ -20,7 +21,11 @@ const ReportGroupSelection = () => {
 
   const handleSelectButtonClick = async (groupId) => {
     try {
-      navigate(`/translator/${groupId}/report/${lastTranslatedReportId[groupId]}`);
+      if (lastTranslatedReportId[groupId] + 1 < reportGroups.length) {
+        navigate(`/translator/${groupId}/report/${lastTranslatedReportId[groupId]}`);
+      } else {
+        toast.error('No hay más reportes para traducir en este grupo');
+      }
     } catch (error) {
       console.error('Error fetching reports for group:', error);
     }
