@@ -21,8 +21,8 @@ const ReportGroupSelection = () => {
 
   const handleSelectButtonClick = async (groupId) => {
     try {
-      console.log(lastTranslatedReportId[groupId], reportGroups[groupId].length);
-      if (lastTranslatedReportId[groupId] + 1 <  reportGroups[groupId].length) {
+
+      if (reportProgress[groupId] < 100) {
         navigate(`/translator/${groupId}/report/${lastTranslatedReportId[groupId]}`);
       } else {
         toast.error('No hay más reportes para traducir en este grupo');
