@@ -70,13 +70,16 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       parent.removeChild(mark);
     });
   };
+  
+  const isTextNode = (node) => node && node.nodeType === Node.TEXT_NODE;
 
   const handleMouseUp = () => {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const selectedText = selection.toString();
-      if (selectedText) {
+      console.log(selection);
+      if (selectedText && isTextNode(selection.focusNode)) {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
 
