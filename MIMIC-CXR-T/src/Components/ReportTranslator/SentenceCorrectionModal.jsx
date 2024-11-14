@@ -232,7 +232,11 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-4 border-primary " >      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                    <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> palabras con <strong>&nbsp;errores terminológicos</strong></Accordion.Header>
+                    <Accordion.Header
+                      className='custom-accordion-header-terminological'
+                    >
+                      Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> palabras con <strong>&nbsp;errores terminológicos</strong>
+                    </Accordion.Header>
                     <Accordion.Body className="examples-text">
                       Este tipo de error se produce cuando la traducción no refleja con precisión los términos o conceptos médicos específicos, lo que puede afectar 
                       la comprensión adecuada del informe médico o dando información plenamente equivocada.<br/>
@@ -257,7 +261,9 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-4 border-success">      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
+                      <Accordion.Header
+                        className='custom-accordion-header-gramatical'
+                      >Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores gramaticales</strong></Accordion.Header>
                       <Accordion.Body className="examples-text">
                         Este tipo de error se refiere a todos los tipos de error gramaticales, semánticos, léxicos, etc. que no representen correctamente el significado
                         de la oración original al estar mal escritas o cambiando el significado original.<br/>
@@ -282,7 +288,9 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                 <Card className="mb-1 border border-warning" >      
                   <Accordion>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
+                      <Accordion.Header
+                        className='custom-accordion-header-functional'
+                      >Si encuentra, <strong>&nbsp;seleccione&nbsp;</strong> sobre palabras con <strong>&nbsp;errores funcionales</strong></Accordion.Header>
                       <Accordion.Body className="examples-text">
                         Ocurren cuando la traducción, si bien transmite el significado general del texto de origen, carece del flujo natural.
                         Este tipo de error puede hacer parecer forzada la traducción y no representan como un nativo en el idioma diría la frase correspondiente.<br/>
@@ -309,22 +317,29 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
         </Modal.Body>
 
         <Form.Group className="edit-frase">
-          <Row className="mx-2 my-2" >
-            <Form.Label className="h4" >
-              <Badge  bg="danger" >
+          <Row className="mx-2 my-2">
+            <Form.Label className="h4">
+              <Badge bg="danger">
                 Escriba la traducción corregida
               </Badge>
-            </Form.Label> 
+            </Form.Label>
             <Form.Control
               as="textarea"
-              rows={2}
+              rows={3}
               value={editedTranslatedSentence}
-              onChange={(evento) => setEditedTranslatedSentence(evento.target.value)}
-              className="border border-secondary"
+              onChange={(e) => setEditedTranslatedSentence(e.target.value)}
+              className="
+                w-full mt-2 p-3 border-2 border-gray-300 rounded-lg 
+                focus:outline-none focus:border-blue-500 focus:ring-2 
+                focus:ring-blue-300 shadow-md hover:shadow-lg transition-all
+                ease-in-out duration-200
+                placeholder-gray-400
+              "
+              placeholder="Escriba aquí la traducción corregida..."
             />
           </Row>
-            
         </Form.Group>
+
 
     
        

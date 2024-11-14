@@ -46,3 +46,18 @@
 .container-header{
     width: 100%;
 }
+
+.custom-accordion-header-terminological button {
+  background-color: aliceblue; /* Cambia el color aquí */
+  color: black; /* Cambia el color del texto aquí, si es necesario */
+}
+
+.custom-accordion-header-gramatical button {
+  background-color: rgba(140,255,107, 0.25); /* Cambia el color aquí */
+  color: black; /* Cambia el color del texto aquí, si es necesario */
+}
+
+.custom-accordion-header-functional button {
+  background-color: blanchedalmond; /* Cambia el color aquí */
+  color: black; /* Cambia el color del texto aquí, si es necesario */
+}

@@ -6,10 +6,27 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   const highlightColor = mapVariantToColor(variant);
   const onOptionClickRef = useRef(onOptionClick);
   const sentenceRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     onOptionClickRef.current = onOptionClick;
   }, [onOptionClick]);
+
+  useEffect(() => {
+    // Añadir estilo de selección dinámica en el montaje
+    const style = document.createElement('style');
+    style.innerHTML = `
+      ${containerRef.current ? `#${containerRef.current.id} ::selection` : '::selection'} {
+        background-color: ${highlightColor};
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      // Limpiar el estilo en el desmontaje
+      document.head.removeChild(style);
+    };
+  }, [highlightColor]);
 
   useEffect(() => {
     const filteredInitialSelectedWords = initialSelectedWords.filter(word => word.type === mapVariantToType(variant));
@@ -84,7 +101,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
         newRange.setStart(startContainer, startOffset);
         newRange.setEnd(endContainer, endOffset);
 
-
         const wordsInRange = newRange.cloneContents();
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
@@ -146,7 +162,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   }, [selectedWords]);
 
   return (
-    <div className='flex flex-row justify-between'>
+    <div ref={containerRef} id={`word-selector-${variant}`} className='flex flex-row justify-between'>
       <p ref={sentenceRef} onMouseUp={handleMouseUp}>
         {sentence.split(/\s+/).map((word, index) => (
           <span key={index} className="word-selector-word">
