@@ -61,3 +61,26 @@
   background-color: blanchedalmond; /* Cambia el color aquí */
   color: black; /* Cambia el color del texto aquí, si es necesario */
 }
+
+/* Sobrescribir estilos base para los botones colapsados */
+.accordion-button:not(.collapsed) {
+  color: inherit !important;
+  background-color: transparent !important; /* Elimina el fondo predeterminado */
+}
+
+/* Estilos específicos por tipo */
+.custom-accordion-header-terminological .accordion-button:not(.collapsed) {
+  background-color: #98caf7 !important; /* Fondo para terminological */
+  color: black !important; /* Texto para terminological */
+}
+
+.custom-accordion-header-gramatical .accordion-button:not(.collapsed) {
+  background-color: rgba(140, 255, 107, 0.5) !important; /* Fondo para gramatical */
+  color: black !important; /* Texto para gramatical */
+}
+
+.custom-accordion-header-functional .accordion-button:not(.collapsed) {
+  background-color: #f6c985 !important; /* Fondo para functional */
+  color: black !important; /* Texto para functional */
+}
+

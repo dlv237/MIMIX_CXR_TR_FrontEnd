@@ -7,6 +7,8 @@ import ModalConfirmDelete from './ModalConfirmDelete';
 import { Modal } from 'react-bootstrap';
 import { createReportBatch } from '../utils/api';
 import toast from 'react-hot-toast';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import './TableDisplayReportGroup.css';
 
 
 const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getReportGroupReports }) => {
@@ -22,6 +24,8 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     setSelectedReport(report);
     setShowModal(true);
   };
+
+  console.log(reportGroupReports);
 
   const handleCloseUploadModal = () => {
     setShowFileModal(false);
@@ -121,21 +125,36 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
       <table className="w-96 divide-y divide-gray-300 mt-20  justify-self-center">
         <thead>
           <tr>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[25%]">Batch Id</th>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[35%]">Reportes</th>
-            <th className="py-3.5 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-0 w-[40%]">Eliminar Grupo</th>
+            <th className="py-3.5 pl-4 pr-3 text-center text-md font-semibold text-gray-900 sm:pl-0 w-[15%]">Batch Id</th>
+            <th className="py-3.5 pl-4 pr-3 text-center text-md font-semibold text-gray-900 sm:pl-0 w-[25%]">Modelo</th>
+            <th className="py-3.5 pl-4 pr-3 text-center text-md font-semibold text-gray-900 sm:pl-0 w-[15%]">Reportes</th>           
+            <th className="py-3.5 pl-4 pr-3 text-center text-md font-semibold text-gray-900 sm:pl-0 w-[45%]">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {updatedReports.map((reportGroupReport) => (
             <tr key={reportGroupReport.id}>
-              <td className='w-[25%]'> {reportGroupReport.id}</td>
-              <td className='w-[35%]'>
+              <td className='w-[15%]'> {reportGroupReport.id}</td>
+              <td className='w-[25%]'> 
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip>{reportGroupReport.model}</Tooltip>}
+                >
+                  <span className="truncate-text">{reportGroupReport.model}</span>
+                </OverlayTrigger>
+              </td>
+              <td className='w-[15%]'> {reportGroupReport.reports.length}</td>
+              <td className='w-[15%]'>
                 <a href="#" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleShowModal(reportGroupReport)}>
-                  Ver detalles
+                  Detalles
                 </a>
               </td>
-              <td className='w-[40%]'>
+              <td className='w-[15%]'>
+                <a href="#" className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
+                  Stats
+                </a>
+              </td>
+              <td className='w-[15%]'>
                 <a href="#" className="text-red-600 hover:text-red-900 cursor-pointer" onClick={() => handleShowModalDelete(reportGroupReport)}>
                   Eliminar
                 </a>
