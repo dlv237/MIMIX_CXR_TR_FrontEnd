@@ -13,7 +13,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   }, [onOptionClick]);
 
   useEffect(() => {
-    // Añadir estilo de selección dinámica en el montaje
+    // Estilo para resaltar palabras seleccionadas
     const style = document.createElement('style');
     style.innerHTML = `
       ${containerRef.current ? `#${containerRef.current.id} ::selection` : '::selection'} {
@@ -21,17 +21,17 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       }
     `;
     document.head.appendChild(style);
-
     return () => {
-      // Limpiar el estilo en el desmontaje
       document.head.removeChild(style);
     };
   }, [highlightColor]);
 
   useEffect(() => {
-    const filteredInitialSelectedWords = initialSelectedWords.filter(word => word.type === mapVariantToType(variant));
-    setSelectedWords(filteredInitialSelectedWords);
-    highlightInitialSelectedWords(filteredInitialSelectedWords);
+    const filteredWords = initialSelectedWords.filter(
+      (word) => word.type === mapVariantToType(variant)
+    );
+    setSelectedWords(filteredWords);
+    highlightInitialSelectedWords(filteredWords);
   }, [initialSelectedWords]);
 
   useEffect(() => {
@@ -50,9 +50,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
         if (wordElement) {
           const mark = document.createElement('mark');
           mark.style.backgroundColor = highlightColor;
-          mark.style.padding = '0';
-          mark.style.margin = '0';
-          mark.style.display = 'inline';
           mark.textContent = wordElement.textContent;
           wordElement.replaceWith(mark);
         }
@@ -70,7 +67,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       parent.removeChild(mark);
     });
   };
-  
+
   const isTextNode = (node) => node && node.nodeType === Node.TEXT_NODE;
 
   const handleMouseUp = () => {
@@ -78,7 +75,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const selectedText = selection.toString();
-      console.log(selection);
       if (selectedText && isTextNode(selection.focusNode)) {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
@@ -86,13 +82,9 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
         const findWordBoundary = (node, offset, direction) => {
           const text = node.textContent;
           if (direction === 'start') {
-            while (offset > 0 && text[offset - 1] !== ' ') {
-              offset--;
-            }
+            while (offset > 0 && text[offset - 1] !== ' ') offset--;
           } else {
-            while (offset < text.length && text[offset] !== ' ') {
-              offset++;
-            }
+            while (offset < text.length && text[offset] !== ' ') offset++;
           }
           return offset;
         };
@@ -107,9 +99,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
         const wordsInRange = newRange.cloneContents();
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
-        mark.style.padding = '0';
-        mark.style.margin = '0';
-        mark.style.display = 'inline';
         mark.appendChild(wordsInRange);
         newRange.deleteContents();
         newRange.insertNode(mark);
@@ -123,21 +112,21 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   const updateSelectedWords = () => {
     const marks = sentenceRef.current.querySelectorAll('mark');
     const updatedSelectedWords = [];
-  
+
     const allWords = sentence.split(/\s+/);
     const seenWords = new Set();
-  
+
     marks.forEach((mark) => {
       const markedText = mark.textContent;
       const words = markedText.split(/\s+/);
-  
+
       let currentIndex = 0;
       words.forEach((word) => {
         if (word) {
           while (currentIndex < allWords.length && allWords[currentIndex] !== word) {
             currentIndex++;
           }
-  
+
           const wordKey = `${word}-${currentIndex}`;
           if (!seenWords.has(wordKey)) {
             updatedSelectedWords.push({
@@ -150,7 +139,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
         }
       });
     });
-  
+
     setSelectedWords(updatedSelectedWords);
   };
 
@@ -176,8 +165,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       <button 
         className='bg-white cursor-auto hover: none focus:outline-none focus:ring-0' 
         disabled={selectedWords.length === 0}
-        onClick={() => handleUndoSelection()}
-        style={{ pointerEvents: 'auto' }}
+        onClick={handleUndoSelection}
       >
         <svg 
           className={`w-6 h-6 ${selectedWords.length === 0 ? 'text-gray-300' : 'text-gray-800'}`} 
