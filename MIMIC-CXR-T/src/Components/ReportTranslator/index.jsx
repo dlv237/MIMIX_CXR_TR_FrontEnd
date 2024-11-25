@@ -27,16 +27,18 @@ function Viewer({
   const [isCrossedSentences, setIsCrossedSentences] = useState({});
   const [sentencesSuggestions, setSentencesSuggestions] = useState({});
   const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
+  const [sentencesAcronyms, setSentencesAcronyms] = useState({});
 
   const handleModalSave = async (editedTranslatedSentence) => {
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
     setSentencesSuggestions(prev => ({ ...prev, [selectedTranslatedSentenceId]: editedTranslatedSentence }));
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
+    console.log('acronyms', sentencesAcronyms);
 
     if (selectedTranslatedSentenceId in translatedSentencesState) {
-      await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
+      await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
     } else {
-      await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
+      await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
     }
   };
 
@@ -45,15 +47,15 @@ function Viewer({
       const response = await getPreviousUserSuggestion(selectedTranslatedSentenceId, token);
 
       if (response) {
-        await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, token);
+        await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
       } else {
-        await updateUserTranslatedSentence(selectedTranslatedSentenceId, null, false, false, token);
+        await updateUserTranslatedSentence(selectedTranslatedSentenceId, null, false, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: null }));
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        await updateUserTranslatedSentence(selectedTranslatedSentenceId, null, false, false, token);
+        await updateUserTranslatedSentence(selectedTranslatedSentenceId, null, false, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: null }));
       } else {
         console.error('Error al cerrar el modal sin guardar:', error);
@@ -128,25 +130,43 @@ function Viewer({
   const loadUserTranslatedPhrase = async (translatedsentence) => {
     try {
       const response = await getPreviousUserTranslatedSentence(translatedsentence.id, token);
-
+  
       if (response) {
-        if (response.isSelectedCheck && response.state)
-          setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: true }));
-        if (response.isSelectedTimes && !response.state)
-          setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: false }));
+        if (response.isSelectedCheck && response.state) {
+          setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: true }));
+          if (response.hasAcronym !== undefined) {
+            setSentencesAcronyms((prev) => ({
+              ...prev,
+              [translatedsentence.id]: response.hasAcronym,
+            }));
+          }
+        }
+        if (response.isSelectedTimes && !response.state) {
+          setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: false }));
+          setSentencesAcronyms((prev) => ({
+            ...prev,
+            [translatedsentence.id]: response.hasAcronym,
+          }));
+        }
+  
+        console.log('Acronyms cargados:', sentencesAcronyms);
       } else {
-        setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: null }));
+        setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: null }));
       }
     } catch (error) {
-      console.error(`Error al cargar la traducción del usuario de la frase id: ${translatedsentence.id}:`, error)
+      console.error(`Error al cargar la traducción del usuario de la frase id: ${translatedsentence.id}:`, error);
     }
   };
+
+  useEffect(() => {
+    console.log('Estado final de acronyms:', sentencesAcronyms);
+  }, [sentencesAcronyms]);
 
   const loadUserSuggestion = async (translatedsentence) => {
     try {
       const response = await getPreviousUserSuggestion(translatedsentence.id, token);
       if (response) {
-        await updateUserTranslatedSentence(translatedsentence.id, false, false, true, token);
+        await updateUserTranslatedSentence(translatedsentence.id, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: false }));
 
         if (response.changesFinalTranslation !== null && response.changesFinalTranslation !== '') {
@@ -167,10 +187,10 @@ function Viewer({
 
       if (translatedSentences.id in translatedSentencesState) {
         setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
-        await updateUserTranslatedSentence(translatedSentences.id, true, true, false, token);
+        await updateUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
       } else {
         setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
-        await createUserTranslatedSentence(translatedSentences.id, true, true, false, token);
+        await createUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
       }
     } else {
       setSelectedTranslatedSentenceId(translatedSentences.id);
@@ -295,6 +315,8 @@ function Viewer({
         selectedTranslatedSentenceId={selectedTranslatedSentenceId}
         onCloseWithoutSave={handleCloseWithoutSave}
         onSave={handleModalSave}
+        sentencesAcronyms={sentencesAcronyms}
+        setSentencesAcronyms={setSentencesAcronyms}
       />
       </>
     );

@@ -96,23 +96,25 @@ export async function createCorrection(correctionData, token) {
   return response.data;
 }
 
-export async function createUserTranslatedSentence(translatedsentenceId, state, isSelectedCheck, isSelectedTimes, token) {
+export async function createUserTranslatedSentence(translatedsentenceId, state, isSelectedCheck, isSelectedTimes, hasAcronym, token) {
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/usertranslatedsentences/${translatedsentenceId}`, {
     translatedsentenceId,
     state,
     isSelectedCheck,
     isSelectedTimes,
+    hasAcronym,
   },  config(token),
   );
   return response.data;
 }
 
-export async function updateUserTranslatedSentence(translatedsentenceId, state, isSelectedCheck, isSelectedTimes, token) {
+export async function updateUserTranslatedSentence(translatedsentenceId, state, isSelectedCheck, isSelectedTimes, hasAcronym, token) {
   const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/usertranslatedsentences/update/${translatedsentenceId}`, {
     translatedsentenceId,
     state,
     isSelectedCheck,
     isSelectedTimes,
+    hasAcronym,
   },  config(token),
   );
   return response.data;

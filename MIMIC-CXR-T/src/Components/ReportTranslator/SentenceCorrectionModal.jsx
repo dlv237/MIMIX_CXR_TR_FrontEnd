@@ -15,8 +15,17 @@ import '../../utils/modalScripts';
 import WordSelector from './WordSelector';
 import '../modal.css';
 import ModalHeaderCorrecction from './ModalHeaderCorrecction';
+import AcronymSelector from './AcronymSelector';
 
-function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseWithoutSave, onSave }) {
+function ModalSuggestions({ 
+  show,
+  onHide, 
+  selectedTranslatedSentenceId, 
+  onCloseWithoutSave, 
+  onSave,
+  sentencesAcronyms,
+  setSentencesAcronyms
+}) {
   const [modalText, setModalText] = useState('');
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [previousSuggestion, setPreviousSuggestion] = useState(null);
@@ -30,6 +39,24 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
   const [selectedOptionsByType, setSelectedOptionsByType] = useState({});
   const [selectedWords, setSelectedWords] = useState([]);
   const [showNoChangesAlert, setShowNoChangesAlert] = useState({ show: false, message: '' });
+  const [selectedOption, setSelectedOption] = useState(() => {
+    return sentencesAcronyms && sentencesAcronyms[selectedTranslatedSentenceId]
+      ? sentencesAcronyms[selectedTranslatedSentenceId]
+      : 'no seleccionado';
+  });
+  
+  const AcronymSelectorList = ['no seleccionado', 'no hay', 'si hay'];
+  
+
+  const handleSelectAcronymState = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    setSentencesAcronyms((prevAcronyms) => {
+      const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
+      console.log("Acronyms actualizados:", updatedAcronyms);
+      return updatedAcronyms;
+    });
+  };
+
 
 
   const loadSentenceAndTranslation = async (selectedTranslatedSentenceId) => {
@@ -112,6 +139,12 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
 
   const handleModalSave = async (event) => {
     event.preventDefault();
+    setSentencesAcronyms((prevAcronyms) => {
+      const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
+      console.log("Acronyms actualizados:", updatedAcronyms);
+      return updatedAcronyms;
+    });
+    onHide();
     try {
       const isModified =
         editedTranslatedSentence !== translatedSentence && selectedOptions.length > 0 
@@ -120,7 +153,6 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
         (options) => options.length > 0
       );
 
-    
       if (!hasSelectedErrors) {
         setShowNoChangesAlert({ show: true, message: "Por favor haga click en al menos una palabra de los errores mostrados" });
         return;
@@ -212,16 +244,18 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
       .filter(Boolean);
     setSelectedOptions(selectedOptions);
   }, [selectedOptionsByType]);
-  
 
+  useEffect(() => {
+    if (show) {
+      loadSentenceAndTranslation(selectedTranslatedSentenceId);
+      loadPreviousSuggestionData(selectedTranslatedSentenceId);
+      loadPreviousCorrectionData(selectedTranslatedSentenceId);
+    }
+  }, [show, selectedTranslatedSentenceId]);
+  
   return (
     <>
-      <Modal show={show} onShow={() => {
-        loadSentenceAndTranslation(selectedTranslatedSentenceId);
-        loadPreviousSuggestionData(selectedTranslatedSentenceId);
-        loadPreviousCorrectionData(selectedTranslatedSentenceId);
-      
-      }} onHide={{}} className="fixed-modal" size="xl" >
+      <Modal show={show} onHide={handleModalClose} className="fixed-modal" size="xl">
         
         <ModalHeaderCorrecction originalSentence={originalSentence} translatedSentence={translatedSentence}/>
 
@@ -253,6 +287,11 @@ function ModalSuggestions({ show, onHide, selectedTranslatedSentenceId, onCloseW
                         selectedOptions={selectedOptionsByType['terminological']}
                         initialSelectedWords={selectedWords}
                         onOptionClick={(option) => handleOptionClick(option, 'terminological')}
+                      />
+                      <AcronymSelector
+                        options={AcronymSelectorList}
+                        selectedOption={selectedOption}
+                        setSelectedOption={handleSelectAcronymState}
                       />
                     </Card>
                   </Accordion>
