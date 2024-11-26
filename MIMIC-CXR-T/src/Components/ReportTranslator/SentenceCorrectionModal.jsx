@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { Button, Modal, Form, Row, Card, 
-  Alert, Badge, Accordion } from 'react-bootstrap';
+import { Button, Modal, Form, Row, Card, Alert, Badge, Accordion } from 'react-bootstrap';
 import { AuthContext } from '../../auth/AuthContext';
 import {
   getPreviousUserSuggestion,
@@ -33,8 +32,7 @@ function ModalSuggestions({
   const [translatedSentence, setTranslatedSentence] = useState('');
   const [originalSentence, setOriginalSentence] = useState('');
   const [editedTranslatedSentence, setEditedTranslatedSentence] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  const [otherErrorDescription, setOtherErrorDescription] = useState('');
+  const [otherErrorDescription, ] = useState('');
   const { token } = useContext(AuthContext);
   const [selectedOptionsByType, setSelectedOptionsByType] = useState({});
   const [selectedWords, setSelectedWords] = useState([]);
@@ -47,7 +45,6 @@ function ModalSuggestions({
   
   const AcronymSelectorList = ['no seleccionado', 'no hay', 'si hay'];
   
-
   const handleSelectAcronymState = (selectedOption) => {
     setSelectedOption(selectedOption);
     setSentencesAcronyms((prevAcronyms) => {
@@ -56,8 +53,6 @@ function ModalSuggestions({
       return updatedAcronyms;
     });
   };
-
-
 
   const loadSentenceAndTranslation = async (selectedTranslatedSentenceId) => {
     try {
@@ -255,7 +250,7 @@ function ModalSuggestions({
   
   return (
     <>
-      <Modal show={show} onHide={handleModalClose} className="fixed-modal" size="xl">
+      <Modal show={show} onHide={handleModalClose} className="fixed-modal" size="xl" animation={false}>
         
         <ModalHeaderCorrecction originalSentence={originalSentence} translatedSentence={translatedSentence}/>
 
