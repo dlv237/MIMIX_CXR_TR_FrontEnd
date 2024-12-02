@@ -209,6 +209,12 @@ export async function getAllReportGroupReports(token){
   return response.data;
 }
 
+export async function getBatchProgress(reportGroupId, token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/progress/${reportGroupId}`, config(token),
+  );
+  return response.data;
+}
+
 export async function createReportGroups(reportgroup, token){
   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reportgroups`, {
     name: reportgroup.name,

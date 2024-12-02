@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Row, Button, Table } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
 import { AuthContext } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -139,10 +139,10 @@ const ReportGroupSelection = () => {
                 </td>
 
                 <td className="w-50">
-                  <button variant="primary" onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className="rounded-md bg-indigo-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-100">Traducir</button>
+                  <button onClick={() => handleSelectButtonClick(group.id, reportProgress[group.id])} className="rounded-md bg-indigo-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-100">Traducir</button>
                 </td>
                 <td className="w-50">
-                  <button variant="secondary" onClick={() => viewTableUserDisplayReportGroup(group.id)} className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">Reportes</button>
+                  <button onClick={() => viewTableUserDisplayReportGroup(group.id)} className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white">Reportes</button>
                 </td>
               </tr>
             ))}

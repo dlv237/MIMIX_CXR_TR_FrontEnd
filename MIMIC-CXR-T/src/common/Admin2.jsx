@@ -1,15 +1,13 @@
 import { useState, useContext, useEffect } from 'react';
 import TableDisplayReports from '../Components/TableDisplayReportGroup';
 import { AuthContext } from '../auth/AuthContext';
-import { getAllReportGroupReports, createUserReportGroups } from '../utils/api';
+import { getAllReportGroupReports, createUserReportGroups, getBatchProgress } from '../utils/api';
 import NavAdmin from '../Components/NavAdmin';
 import CreateUserReportGroup from '../Components/CreateUserReportGroup';
 import DisplayUsers from '../Components/TableDisplayUsers';
 import { useNavigate } from 'react-router-dom';
 import Signup from '../profile/Signup';
-
 import { getAllUsers } from '../utils/api';
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -22,6 +20,7 @@ function Admin2() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("first");
+  const [batchsProgress, setBatchsProgress] = useState({});
 
   const getReportGroupReports = async () => {
     try {
@@ -29,13 +28,24 @@ function Admin2() {
       setReportGroupReports(response);
     } catch (error) {
       console.error('Error fetching reportGroupReports:', error);
-    } 
+    }
+  };
+
+  const fetchBatchsProgress = async () => {
+    const progressUpdates = {};
+    for (const report of reportGroupReports) {
+      const response = await getBatchProgress(report.id, token);
+      progressUpdates[report.id] = response;
+      console.log(report.id, token);
+    }
+    setBatchsProgress(progressUpdates);
+    console.log(batchsProgress);
   };
 
   const handleDeleteReportGroup = (deletedReportId) => {
     setReportGroupReports(prevReports => prevReports.filter(report => report.id !== deletedReportId));
   };
-  
+
   const handleDeleteUser = (deletedUserId) => {
     setUsers(prevUsers => prevUsers.filter(user => user.id !== deletedUserId));
   };
@@ -49,7 +59,7 @@ function Admin2() {
       return error.response;
     }
   };
-  
+
   const getUsers = async () => {
     try {
       const usersData = await getAllUsers(token);
@@ -62,8 +72,13 @@ function Admin2() {
   useEffect(() => {
     getReportGroupReports();
     getUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  useEffect(() => {
+    if (reportGroupReports.length > 0) {
+      fetchBatchsProgress();
+    }
+  }, [reportGroupReports]);
 
   useEffect(() => {
     if (user && user.role !== 'Admin') {
@@ -107,7 +122,12 @@ function Admin2() {
             <div className="flex-1 p-6 overflow-y-auto" style={{height:'93vh'}}>
               {/* Contenido según la pestaña activa */}
               {activeTab === "first" && (
-                <TableDisplayReports reportGroupReports={reportGroupReports} onDeleteReportGroup={handleDeleteReportGroup} getReportGroupReports={getReportGroupReports}/>
+                <TableDisplayReports 
+                  reportGroupReports={reportGroupReports} 
+                  onDeleteReportGroup={handleDeleteReportGroup} 
+                  getReportGroupReports={getReportGroupReports}
+                  batchsProgress={batchsProgress}
+                />
               )}
               {activeTab === "second" && (
                 <CreateUserReportGroup handleCreateUserReportGroup={handleCreateUserReportGroup} allUsers={users} reportGroupReports={reportGroupReports} getReportGroupReports={getReportGroupReports} />
