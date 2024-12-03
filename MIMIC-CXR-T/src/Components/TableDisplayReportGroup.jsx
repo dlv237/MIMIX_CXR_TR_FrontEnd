@@ -28,6 +28,8 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
   const [indeterminate, setIndeterminate] = useState(false);
   const [generatedFiles, setGeneratedFiles] = useState([]);
   const [showGeneratedFilesModal, setShowGeneratedFilesModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showModalViewReport, setShowModalViewReport] = useState(false);
 
 
   const handleShowModal = (report) => {
@@ -125,23 +127,42 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     setIsLoading(true);
   
     const newFiles = [];
-    for (const userId of selectedUsers) {
+    if (selectedUsers === batchsProgress[selectedGroupId]) {
       try {
-        const response = await generateStatsFromBatch(selectedGroupId, userId, token);
+        const response = await generateStatsFromBatch(selectedGroupId, "all", token);
   
         const blob = new Blob([response], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
-        const fileName = `reporte_${userId}.pdf`;
+        const fileName = `reporte__B${selectedGroupId}_all.pdf`;
   
         newFiles.push({
-          userId,
+          userId: "all",
           name: fileName,
           url,
         });
       } catch (error) {
         console.error('Error generando el reporte:', error);
       }
+    } else {
+      for (const userId of selectedUsers) {
+        try {
+          const response = await generateStatsFromBatch(selectedGroupId, userId, token);
+    
+          const blob = new Blob([response], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          const fileName = `reporte__B${selectedGroupId}_U${userId}.pdf`;
+    
+          newFiles.push({
+            userId,
+            name: fileName,
+            url,
+          });
+        } catch (error) {
+          console.error('Error generando el reporte:', error);
+        }
+      }
     }
+    
   
     setGeneratedFiles((prevFiles) => [...prevFiles, ...newFiles]);
     setIsLoading(false);
@@ -184,8 +205,8 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         {isLoading && (
           <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-4 rounded-lg shadow-lg text-center">
-              <p className="text-lg font-semibold">Generando pdf del reporte</p>
-              <p className="text-sm text-gray-500">Por favor, No recargue ni cierre esta ventana</p>
+              <p className="text-lg font-semibold">Generando pdf(s) del batch</p>
+              <p className="text-sm text-gray-500">Por favor, no recargue ni cierre esta ventana</p>
             </div>
           </div>
         )}
@@ -371,7 +392,10 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
                     <td className="w-1/2 py-2 px-4 flex flex-row">
                       <a
                         href='#'
-                        onClick={() => window.open(file.url, '_blank')}
+                        onClick={() => {
+                          setSelectedFile(file);
+                          setShowModalViewReport(true);
+                        }}
                         className="text-indigo-600 hover:text-indigo-900 mr-4 bg-transparent"
                       >
                         Previsualizar
@@ -394,6 +418,22 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowGeneratedFilesModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      
+      {/* Modal para mostrar la previsualización de un archivo pdf*/}
+      <Modal show={showModalViewReport} onHide={() => setShowModalViewReport(false)} className="mt-10">
+        <Modal.Header closeButton>
+          <Modal.Title>Previsualización de Reporte</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <iframe src={selectedFile?.url} width="100%" height="600px" title="Reporte" />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalViewReport(false)}>
             Cerrar
           </Button>
         </Modal.Footer>

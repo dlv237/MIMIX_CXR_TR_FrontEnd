@@ -15,6 +15,7 @@ import WordSelector from './WordSelector';
 import '../modal.css';
 import ModalHeaderCorrecction from './ModalHeaderCorrecction';
 import AcronymSelector from './AcronymSelector';
+import toast from 'react-hot-toast';
 
 function ModalSuggestions({ 
   show,
@@ -139,7 +140,15 @@ function ModalSuggestions({
       console.log("Acronyms actualizados:", updatedAcronyms);
       return updatedAcronyms;
     });
+
+    if (selectedOption === 'no seleccionado') {
+      toast.error('Por favor seleccione si hay o no acrónimos en la traducción');
+      return;
+    }
+
     onHide();
+
+    
     try {
       const isModified =
         editedTranslatedSentence !== translatedSentence && selectedOptions.length > 0 
