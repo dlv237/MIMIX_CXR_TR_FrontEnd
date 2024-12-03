@@ -425,7 +425,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
 
       
       {/* Modal para mostrar la previsualización de un archivo pdf*/}
-      <Modal show={showModalViewReport} onHide={() => setShowModalViewReport(false)} className="mt-10">
+      <Modal show={showModalViewReport} onHide={() => setShowModalViewReport(false)} className="mt-10 modal-xl">
         <Modal.Header closeButton>
           <Modal.Title>Previsualización de Reporte</Modal.Title>
         </Modal.Header>
