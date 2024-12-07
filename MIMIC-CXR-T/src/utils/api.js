@@ -36,6 +36,13 @@ export async function generateStatsFromBatch(reportGroupId, userId, token) {
   return response.data;
 }
 
+export async function getBatchPdf(reportGroupId, userId, token) {
+  const response = await axios.get(
+    `${import.meta.env.VITE_BACKEND_URL}/reportgroups/stats/${reportGroupId}/${userId}`, config(token),
+  );
+  return response.data;
+}
+
 export async function getReportGroupReports(groupId, token) { 
   const response = await axios.get(
   `${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/${groupId}`, config(token),

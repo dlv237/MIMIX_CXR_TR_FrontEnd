@@ -1,6 +1,6 @@
 import { useState, useContext, useLayoutEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
-import { deleteReportGroupReport, generateStatsFromBatch } from '../utils/api';
+import { deleteReportGroupReport, generateStatsFromBatch, getBatchPdf } from '../utils/api';
 import { AuthContext } from '../auth/AuthContext';
 import ModalReport from './ModalReport';
 import ModalConfirmDelete from './ModalConfirmDelete';
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import './TableDisplayReportGroup.css';
 import classNames from 'classnames';
+import ReportPreview from './ReportPreview';
 
 const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getReportGroupReports, batchsProgress }) => {
   const { token } = useContext(AuthContext);
@@ -30,6 +31,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
   const [showGeneratedFilesModal, setShowGeneratedFilesModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showModalViewReport, setShowModalViewReport] = useState(false);
+  const [reportData, setReportData] = useState(null);
 
 
   const handleShowModal = (report) => {
@@ -122,7 +124,9 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     }
   };
 
-  const downloadReport = async () => {
+
+
+  const generateReport = async () => {
     setShowStatsModal(false);
     setIsLoading(true);
   
@@ -130,8 +134,11 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     if (selectedUsers === batchsProgress[selectedGroupId]) {
       try {
         const response = await generateStatsFromBatch(selectedGroupId, "all", token);
-  
-        const blob = new Blob([response], { type: 'application/pdf' });
+        setReportData(response);
+        console.log("Response:", response);
+
+        const pdfResponse = await getBatchPdf(selectedGroupId, "all", token);
+        const blob = new Blob([pdfResponse], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
         const fileName = `reporte__B${selectedGroupId}_all.pdf`;
   
@@ -147,11 +154,14 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
       for (const userId of selectedUsers) {
         try {
           const response = await generateStatsFromBatch(selectedGroupId, userId, token);
-    
-          const blob = new Blob([response], { type: 'application/pdf' });
+          setReportData(response);
+          console.log("Response:", response);
+
+          const pdfResponse = await getBatchPdf(selectedGroupId, userId, token);
+          const blob = new Blob([pdfResponse], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
-          const fileName = `reporte__B${selectedGroupId}_U${userId}.pdf`;
-    
+          const fileName = `reporte__B${selectedGroupId}_${userId}.pdf`;
+
           newFiles.push({
             userId,
             name: fileName,
@@ -205,7 +215,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         {isLoading && (
           <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-4 rounded-lg shadow-lg text-center">
-              <p className="text-lg font-semibold">Generando pdf(s) del batch</p>
+              <p className="text-lg font-semibold">Generando reporte de estadísticas del batch</p>
               <p className="text-sm text-gray-500">Por favor, no recargue ni cierre esta ventana</p>
             </div>
           </div>
@@ -364,7 +374,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
           <Button variant="secondary" onClick={handleCloseStatsModal}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={downloadReport}>
+          <Button variant="primary" onClick={generateReport}>
             Generar
           </Button>
         </Modal.Footer>
@@ -430,7 +440,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
           <Modal.Title>Previsualización de Reporte</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <iframe src={selectedFile?.url} width="100%" height="600px" title="Reporte" />
+          <ReportPreview reportData={reportData} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModalViewReport(false)}>
