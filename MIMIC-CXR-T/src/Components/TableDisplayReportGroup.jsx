@@ -140,7 +140,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         const pdfResponse = await getBatchPdf(selectedGroupId, "all", token);
         const blob = new Blob([pdfResponse], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
-        const fileName = `reporte__B${selectedGroupId}_all.pdf`;
+        const fileName = `reporte_B${selectedGroupId}_allUsers.pdf`;
   
         newFiles.push({
           userId: "all",
@@ -160,7 +160,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
           const pdfResponse = await getBatchPdf(selectedGroupId, userId, token);
           const blob = new Blob([pdfResponse], { type: 'application/pdf' });
           const url = window.URL.createObjectURL(blob);
-          const fileName = `reporte__B${selectedGroupId}_${userId}.pdf`;
+          const fileName = `reporte__B${selectedGroupId}_User${userId}.pdf`;
 
           newFiles.push({
             userId,
@@ -435,7 +435,7 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
 
       
       {/* Modal para mostrar la previsualización de un archivo pdf*/}
-      <Modal show={showModalViewReport} onHide={() => setShowModalViewReport(false)} className="mt-10 modal-xl">
+      <Modal show={showModalViewReport} onHide={() => setShowModalViewReport(false)} className="mt-10 modal-lg">
         <Modal.Header closeButton>
           <Modal.Title>Previsualización de Reporte</Modal.Title>
         </Modal.Header>

@@ -48,11 +48,6 @@ function ModalSuggestions({
   
   const handleSelectAcronymState = (selectedOption) => {
     setSelectedOption(selectedOption);
-    setSentencesAcronyms((prevAcronyms) => {
-      const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
-      console.log("Acronyms actualizados:", updatedAcronyms);
-      return updatedAcronyms;
-    });
   };
 
   const loadSentenceAndTranslation = async (selectedTranslatedSentenceId) => {

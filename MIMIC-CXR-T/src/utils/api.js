@@ -253,6 +253,18 @@ export async function getAllUsers(token){
   return response.data;
 }
 
+export async function updateUser(user, token){
+  const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/users/update`, {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    role: user.role,
+    password: user.password,
+  }, config(token),
+  );
+  return response.data;
+}
+
 export async function deleteUser(userId, token){
   try{
     const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/users/delete/${userId}`, config(token),
