@@ -39,9 +39,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     setShowModal(true);
   };
 
-  console.log(reportGroupReports);
-  console.log(batchsProgress);
-
   const handleCloseUploadModal = () => {
     setShowFileModal(false);
   };
@@ -135,7 +132,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
       try {
         const response = await generateStatsFromBatch(selectedGroupId, "all", token);
         setReportData(response);
-        console.log("Response:", response);
 
         const pdfResponse = await getBatchPdf(selectedGroupId, "all", token);
         const blob = new Blob([pdfResponse], { type: 'application/pdf' });
@@ -155,7 +151,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         try {
           const response = await generateStatsFromBatch(selectedGroupId, userId, token);
           setReportData(response);
-          console.log("Response:", response);
 
           const pdfResponse = await getBatchPdf(selectedGroupId, userId, token);
           const blob = new Blob([pdfResponse], { type: 'application/pdf' });
@@ -190,10 +185,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
     if (checkbox.current) {
       checkbox.current.indeterminate = isIndeterminate;
     }
-    
-    console.log("Checkbox checked:", checked);
-    console.log("Checkbox indeterminate:", indeterminate);
-    console.log("Selected Users:", selectedUsers);
 
   }, [selectedUsers, selectedGroupId, batchsProgress]);
   

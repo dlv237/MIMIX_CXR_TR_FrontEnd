@@ -132,7 +132,6 @@ function ModalSuggestions({
     event.preventDefault();
     setSentencesAcronyms((prevAcronyms) => {
       const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
-      console.log("Acronyms actualizados:", updatedAcronyms);
       return updatedAcronyms;
     });
 

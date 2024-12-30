@@ -33,7 +33,6 @@ function Viewer({
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
     setSentencesSuggestions(prev => ({ ...prev, [selectedTranslatedSentenceId]: editedTranslatedSentence }));
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
-    console.log('acronyms', sentencesAcronyms);
 
     if (selectedTranslatedSentenceId in translatedSentencesState) {
       await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
@@ -149,7 +148,6 @@ function Viewer({
           }));
         }
   
-        console.log('Acronyms cargados:', sentencesAcronyms);
       } else {
         setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: null }));
       }
@@ -157,10 +155,6 @@ function Viewer({
       console.error(`Error al cargar la traducción del usuario de la frase id: ${translatedsentence.id}:`, error);
     }
   };
-
-  useEffect(() => {
-    console.log('Estado final de acronyms:', sentencesAcronyms);
-  }, [sentencesAcronyms]);
 
   const loadUserSuggestion = async (translatedsentence) => {
     try {
@@ -182,8 +176,7 @@ function Viewer({
 
   const handleTranslatedSentenceClick = async (translatedSentences, check) => {
     if (check) {
-      await deleteUserCorrectionsTranslatedSentence(translatedSentences.id, token);
-      await deleteSuggestion(translatedSentences.id, token);
+      
 
       if (translatedSentences.id in translatedSentencesState) {
         setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
@@ -192,6 +185,9 @@ function Viewer({
         setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
         await createUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
       }
+
+      await deleteUserCorrectionsTranslatedSentence(translatedSentences.id, token);
+      await deleteSuggestion(translatedSentences.id, token);
     } else {
       setSelectedTranslatedSentenceId(translatedSentences.id);
       setIsModalOpen(true);

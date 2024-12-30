@@ -36,10 +36,8 @@ function Admin2() {
     for (const report of reportGroupReports) {
       const response = await getBatchProgress(report.id, token);
       progressUpdates[report.id] = response;
-      console.log(report.id, token);
     }
     setBatchsProgress(progressUpdates);
-    console.log(batchsProgress);
   };
 
   const handleDeleteReportGroup = (deletedReportId) => {
