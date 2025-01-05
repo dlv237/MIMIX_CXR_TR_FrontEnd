@@ -43,6 +43,7 @@ function ModalSuggestions({
       ? sentencesAcronyms[selectedTranslatedSentenceId]
       : 'no seleccionado';
   });
+  const [isReopen, setIsReopen] = useState(false);
   
   const AcronymSelectorList = ['no seleccionado', 'no hay', 'si hay'];
   
@@ -130,39 +131,29 @@ function ModalSuggestions({
 
   const handleModalSave = async (event) => {
     event.preventDefault();
-    setSentencesAcronyms((prevAcronyms) => {
-      const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
-      return updatedAcronyms;
-    });
 
     if (selectedOption === 'no seleccionado') {
       toast.error('Por favor seleccione si hay o no acrónimos en la traducción');
       return;
     }
-
-    onHide();
-
     
     try {
-      const isModified =
-        editedTranslatedSentence !== translatedSentence && selectedOptions.length > 0 
-
+      const isModified = editedTranslatedSentence !== translatedSentence;
       const hasSelectedErrors = Object.values(selectedOptionsByType).some(
         (options) => options.length > 0
       );
 
       if (!hasSelectedErrors) {
-        setShowNoChangesAlert({ show: true, message: "Por favor haga click en al menos una palabra de los errores mostrados" });
+        toast.error('Por favor seleccione al menos un error en la traducción');
         return;
       }
   
       if (!isModified) {
-        setShowNoChangesAlert({ show: true, message: "Por favor modifique la traducción final antes de guardar." });
+        toast.error('Por favor modifique la traducción final antes de guardar.');
         return;
       }
 
       if (previousSuggestion === null) {
-        // Your existing logic for creating a new suggestion and corrections
         await createSuggestion(
           selectedTranslatedSentenceId,
           modalText,
@@ -184,7 +175,6 @@ function ModalSuggestions({
           })
         );
       } else {
-        // Your existing logic for updating suggestion and corrections
         if (previousSuggestion.translatedSentenceId === selectedTranslatedSentenceId) {
           await updateSuggestion(
             selectedTranslatedSentenceId,
@@ -193,7 +183,6 @@ function ModalSuggestions({
             otherErrorDescription,
             token
           );
-  
         } else {
           await createSuggestion(
             selectedTranslatedSentenceId,
@@ -220,11 +209,13 @@ function ModalSuggestions({
         );
       }
       onSave(editedTranslatedSentence);
+      setSentencesAcronyms((prevAcronyms) => {
+        const updatedAcronyms = { ...prevAcronyms, [selectedTranslatedSentenceId]: selectedOption };
+        return updatedAcronyms;
+      });
       onHide();
-      loadPreviousSuggestionData(selectedTranslatedSentenceId);
     } catch (error) {
       console.error('Error saving modal:', error);
-      // Handle errors appropriately
     }
   };
   
@@ -244,10 +235,11 @@ function ModalSuggestions({
   }, [selectedOptionsByType]);
 
   useEffect(() => {
-    if (show) {
+    if (show && !isReopen){
       loadSentenceAndTranslation(selectedTranslatedSentenceId);
       loadPreviousSuggestionData(selectedTranslatedSentenceId);
       loadPreviousCorrectionData(selectedTranslatedSentenceId);
+      setIsReopen(true);
     }
   }, [show, selectedTranslatedSentenceId]);
   
@@ -377,9 +369,6 @@ function ModalSuggestions({
           </Row>
         </Form.Group>
 
-
-    
-       
         <Modal.Footer className="modal-footer">
         <Alert
           variant="warning"
