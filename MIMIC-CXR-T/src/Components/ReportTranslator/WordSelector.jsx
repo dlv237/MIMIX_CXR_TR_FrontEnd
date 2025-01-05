@@ -13,7 +13,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   }, [onOptionClick]);
 
   useEffect(() => {
-    // Estilo para resaltar palabras seleccionadas
     const style = document.createElement('style');
     style.innerHTML = `
       ${containerRef.current ? `#${containerRef.current.id} ::selection` : '::selection'} {
@@ -74,32 +73,39 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
+      const container = sentenceRef.current;
+
+      // Verificar que la selección está dentro del contenedor
+      if (!container.contains(range.startContainer) && !container.contains(range.endContainer)) {
+        return; // No procesar selección fuera del contenedor
+      }
+
       const selectedText = selection.toString();
       if (selectedText && isTextNode(selection.focusNode)) {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
 
-        const findWordBoundary = (node, offset, direction) => {
-          const text = node.textContent;
+        const adjustOffset = (node, offset, direction) => {
+          const text = node.textContent || '';
           if (direction === 'start') {
             while (offset > 0 && text[offset - 1] !== ' ') offset--;
-          } else {
+          } else if (direction === 'end') {
             while (offset < text.length && text[offset] !== ' ') offset++;
           }
           return offset;
         };
 
-        let startOffset = findWordBoundary(startContainer, range.startOffset, 'start');
-        let endOffset = findWordBoundary(endContainer, range.endOffset, 'end');
+        const startOffset = adjustOffset(startContainer, range.startOffset, 'start');
+        const endOffset = adjustOffset(endContainer, range.endOffset, 'end');
 
         const newRange = document.createRange();
         newRange.setStart(startContainer, startOffset);
         newRange.setEnd(endContainer, endOffset);
 
-        const wordsInRange = newRange.cloneContents();
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
-        mark.appendChild(wordsInRange);
+        mark.textContent = newRange.toString();
+
         newRange.deleteContents();
         newRange.insertNode(mark);
 
@@ -148,6 +154,13 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   };
 
   useEffect(() => {
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  useEffect(() => {
     if (selectedWords.length === 0) {
       unhighlightWords();
     }
@@ -155,7 +168,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
 
   return (
     <div ref={containerRef} id={`word-selector-${variant}`} className='flex flex-row justify-between'>
-      <p ref={sentenceRef} onMouseUp={handleMouseUp}>
+      <p ref={sentenceRef}>
         {sentence.split(/\s+/).map((word, index) => (
           <span key={index} className="word-selector-word">
             {word}{' '}
