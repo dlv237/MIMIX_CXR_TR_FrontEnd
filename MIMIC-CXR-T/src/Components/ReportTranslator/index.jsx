@@ -160,7 +160,7 @@ function Viewer({
     try {
       const response = await getPreviousUserSuggestion(translatedsentence.id, token);
       if (response) {
-        await updateUserTranslatedSentence(translatedsentence.id, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
+        await updateUserTranslatedSentence(translatedsentence.id, true, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: false }));
 
         if (response.changesFinalTranslation !== null && response.changesFinalTranslation !== '') {
@@ -176,14 +176,12 @@ function Viewer({
 
   const handleTranslatedSentenceClick = async (translatedSentences, check) => {
     if (check) {
-      
-
       if (translatedSentences.id in translatedSentencesState) {
-        setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
         await updateUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
-      } else {
         setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
+      } else {
         await createUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
+        setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
       }
 
       await deleteUserCorrectionsTranslatedSentence(translatedSentences.id, token);

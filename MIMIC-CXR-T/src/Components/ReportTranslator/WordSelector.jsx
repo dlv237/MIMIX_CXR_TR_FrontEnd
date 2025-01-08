@@ -74,17 +74,17 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const container = sentenceRef.current;
-
-      // Verificar que la selección está dentro del contenedor
-      if (!container.contains(range.startContainer) && !container.contains(range.endContainer)) {
-        return; // No procesar selección fuera del contenedor
+  
+      // Verificar que ambos extremos de la selección están dentro del contenedor
+      if (!container.contains(range.startContainer) || !container.contains(range.endContainer)) {
+        return; // Salir si la selección no está completamente dentro del contenedor
       }
-
-      const selectedText = selection.toString();
+  
+      const selectedText = selection.toString().trim();
       if (selectedText && isTextNode(selection.focusNode)) {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
-
+  
         const adjustOffset = (node, offset, direction) => {
           const text = node.textContent || '';
           if (direction === 'start') {
@@ -94,26 +94,27 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
           }
           return offset;
         };
-
+  
         const startOffset = adjustOffset(startContainer, range.startOffset, 'start');
         const endOffset = adjustOffset(endContainer, range.endOffset, 'end');
-
+  
         const newRange = document.createRange();
         newRange.setStart(startContainer, startOffset);
         newRange.setEnd(endContainer, endOffset);
-
+  
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
         mark.textContent = newRange.toString();
-
+  
         newRange.deleteContents();
         newRange.insertNode(mark);
-
+  
         updateSelectedWords();
       }
       selection.removeAllRanges();
     }
   };
+  
 
   const updateSelectedWords = () => {
     const marks = sentenceRef.current.querySelectorAll('mark');

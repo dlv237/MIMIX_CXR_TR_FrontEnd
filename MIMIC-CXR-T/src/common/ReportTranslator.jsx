@@ -56,6 +56,7 @@ function ReportTranslator() {
   
 
   const goToNextReport = async () => {
+    console.log("presionado");
     const currentIndex = report.report.index;
     const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
     if (isCurrentReportCompleted.completed && !(currentIndex === reportsLength - 1)) {

@@ -20,7 +20,7 @@ function ReportSentencesTable({
     const types = ["background", "findings", "impression"];
     return types.map((type) => {
       const nonEmptyOriginalSentences = originalSentences[type].filter((sentence) => sentence.text.trim() !== "");
-      const nonEmptyTranslatedSentences = translatedSentences[type].filter((sentence) => sentence.text.trim() !== "");
+      const nonEmptyTranslatedSentences = translatedSentences[type].filter((sentence) => sentence.text && sentence.text.trim() !== "");
 
       if (nonEmptyOriginalSentences.length === 0 && nonEmptyTranslatedSentences.length === 0) {
         return null;
