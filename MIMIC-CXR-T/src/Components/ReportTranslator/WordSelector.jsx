@@ -13,6 +13,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   }, [onOptionClick]);
 
   useEffect(() => {
+    // Estilo para resaltar palabras seleccionadas
     const style = document.createElement('style');
     style.innerHTML = `
       ${containerRef.current ? `#${containerRef.current.id} ::selection` : '::selection'} {
@@ -46,6 +47,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       if (type === mapVariantToType(variant)) {
         const wordElements = sentenceRef.current.childNodes;
         const wordElement = wordElements[index];
+        console.log(words[index], type);
         if (wordElement) {
           const mark = document.createElement('mark');
           mark.style.backgroundColor = highlightColor;
@@ -74,17 +76,16 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const container = sentenceRef.current;
-  
-      // Verificar que ambos extremos de la selección están dentro del contenedor
+
       if (!container.contains(range.startContainer) || !container.contains(range.endContainer)) {
-        return; // Salir si la selección no está completamente dentro del contenedor
+        return;
       }
-  
+
       const selectedText = selection.toString().trim();
       if (selectedText && isTextNode(selection.focusNode)) {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
-  
+
         const adjustOffset = (node, offset, direction) => {
           const text = node.textContent || '';
           if (direction === 'start') {
@@ -94,27 +95,26 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
           }
           return offset;
         };
-  
+
         const startOffset = adjustOffset(startContainer, range.startOffset, 'start');
         const endOffset = adjustOffset(endContainer, range.endOffset, 'end');
-  
+
         const newRange = document.createRange();
         newRange.setStart(startContainer, startOffset);
         newRange.setEnd(endContainer, endOffset);
-  
+
+        const wordsInRange = newRange.cloneContents();
         const mark = document.createElement('mark');
         mark.style.backgroundColor = highlightColor;
-        mark.textContent = newRange.toString();
-  
+        mark.appendChild(wordsInRange);
         newRange.deleteContents();
         newRange.insertNode(mark);
-  
+
         updateSelectedWords();
       }
       selection.removeAllRanges();
     }
   };
-  
 
   const updateSelectedWords = () => {
     const marks = sentenceRef.current.querySelectorAll('mark');
@@ -127,21 +127,21 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       const markedText = mark.textContent;
       const words = markedText.split(/\s+/);
 
-      let currentIndex = 0;
+      let startIndex = 0;
+
       words.forEach((word) => {
         if (word) {
-          while (currentIndex < allWords.length && allWords[currentIndex] !== word) {
-            currentIndex++;
-          }
-
-          const wordKey = `${word}-${currentIndex}`;
-          if (!seenWords.has(wordKey)) {
-            updatedSelectedWords.push({
-              word,
-              index: currentIndex,
-              type: mapVariantToType(variant),
-            });
-            seenWords.add(wordKey);
+          for (let currentIndex = startIndex; currentIndex < allWords.length; currentIndex++) {
+            if (allWords[currentIndex] === word && !seenWords.has(`${word}-${currentIndex}`)) {
+              updatedSelectedWords.push({
+                word,
+                index: currentIndex,
+                type: mapVariantToType(variant),
+              });
+              seenWords.add(`${word}-${currentIndex}`);
+              startIndex = currentIndex + 1;
+              break;
+            }
           }
         }
       });
@@ -155,13 +155,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
   };
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
-
-  useEffect(() => {
     if (selectedWords.length === 0) {
       unhighlightWords();
     }
@@ -169,7 +162,7 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
 
   return (
     <div ref={containerRef} id={`word-selector-${variant}`} className='flex flex-row justify-between'>
-      <p ref={sentenceRef}>
+      <p ref={sentenceRef} onMouseUp={handleMouseUp}>
         {sentence.split(/\s+/).map((word, index) => (
           <span key={index} className="word-selector-word">
             {word}{' '}

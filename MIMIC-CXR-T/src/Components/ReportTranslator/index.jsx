@@ -3,10 +3,11 @@ import { Table, Form, Container, Row, Col, OverlayTrigger, Tooltip, Badge, Butto
 import './viewer.css';
 import ModalSuggestions from './SentenceCorrectionModal';
 import ReportSentencesTable from '../ReportTranslator/ReportSentencesTable';
+import { toast } from 'react-hot-toast';
 
 import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
-  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getIsReportCompleted } from '../../utils/api';
+  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../../utils/api';
 import { AuthContext } from '../../auth/AuthContext';
 
 function Viewer({ 
@@ -30,6 +31,7 @@ function Viewer({
   const [sentencesAcronyms, setSentencesAcronyms] = useState({});
 
   const handleModalSave = async (editedTranslatedSentence) => {
+    console.log(Object.keys(translatedSentencesState).length);
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
     setSentencesSuggestions(prev => ({ ...prev, [selectedTranslatedSentenceId]: editedTranslatedSentence }));
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
@@ -73,12 +75,21 @@ function Viewer({
   );
 
   const handleNextReport = async () => {
-    const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
+    const reportSentencesLength = report.report.sentences.background.length + 
+                                  report.report.sentences.findings.length + 
+                                  report.report.sentences.impression.length;
+    const translatedSentencesLength = translatedSentencesState ? Object.keys(translatedSentencesState).length : 0;
+    console.log(reportSentencesLength, translatedSentencesLength);
     const newProgressByReports = calculateProgressByReports();
-    if ( currentIndex === lastTranslatedReportId && isCurrentReportCompleted.completed) {
+    if (currentIndex === lastTranslatedReportId && reportSentencesLength === translatedSentencesLength) {
       await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
     }
-    goToNextReport();
+    if (reportSentencesLength === translatedSentencesLength) {
+      goToNextReport();
+    }
+    else {
+      toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
+    }
   };
 
   useEffect(() => {
@@ -175,6 +186,7 @@ function Viewer({
   };
 
   const handleTranslatedSentenceClick = async (translatedSentences, check) => {
+    
     if (check) {
       if (translatedSentences.id in translatedSentencesState) {
         await updateUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
@@ -190,6 +202,8 @@ function Viewer({
       setSelectedTranslatedSentenceId(translatedSentences.id);
       setIsModalOpen(true);
     }
+    console.log(translatedSentencesState);
+    console.log(translatedSentences.id);
   };
 
 

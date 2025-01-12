@@ -9,7 +9,6 @@ import {
   getIsReportCompleted, getReportGroupReportsLength, getReportFromGroupReports
 } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 
 function ReportTranslator() {
   const { token } = useContext(AuthContext);
@@ -56,19 +55,7 @@ function ReportTranslator() {
   
 
   const goToNextReport = async () => {
-    console.log("presionado");
-    const currentIndex = report.report.index;
-    const isCurrentReportCompleted = await getIsReportCompleted(report.report.reportId, token);
-    if (isCurrentReportCompleted.completed && !(currentIndex === reportsLength - 1)) {
-      navigate(`/translator/${groupId}/report/${report.report.index+1}`);
-      window.scrollTo(0, 0);
-    } else if (isCurrentReportCompleted.completed) {
-      navigate('/reportselection');
-      window.scrollTo(0, 0);
-    } 
-    else {
-      toast.error('El reporte actual no está completo. Por favor, revisa todas las oraciones antes de avanzar.');
-    }
+    navigate(`/translator/${groupId}/report/${report.report.index+1}`);
   };
   
 
