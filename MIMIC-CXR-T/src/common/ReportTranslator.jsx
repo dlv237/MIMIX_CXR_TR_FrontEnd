@@ -56,6 +56,7 @@ function ReportTranslator() {
 
   const goToNextReport = async () => {
     navigate(`/translator/${groupId}/report/${report.report.index+1}`);
+    scrollTo(0, 0);
   };
   
 
