@@ -317,3 +317,25 @@ export async function fetchTotalTranslatedSentences(groupId, token){
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reportgroupreports/translated/${groupId}`, config(token));
   return response.data;
 }
+
+export async function getCommentByTranslatedSentenceId(translatedSentenceId, token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${translatedSentenceId}`, config(token));
+  return response.data;
+}
+
+export async function createComment(translatedSentenceId, comment, token){
+  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/comments`, {
+    translatedSentenceId,
+    comment,
+    state: "No revisado"
+  }, config(token));
+  return response.data;
+}
+
+export async function updateComment(commentId, comment, status, token){
+  const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`, {
+    comment,
+    state: status,
+  }, config(token));
+  return response.data;
+}

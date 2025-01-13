@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { AuthContext } from '../auth/AuthContext';
-import { createReportBatch } from '../utils/api';
+import { AuthContext } from '../../auth/AuthContext';
+import { createReportBatch } from '../../utils/api';
 import toast from 'react-hot-toast';
 
 const ModalUploadReport = ({getReportGroupReports}) => {

@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Form, Button, Container, Alert} from 'react-bootstrap';
-import {createReportGroups, getAllReportGroupReports} from '../utils/api';
-import { AuthContext } from '../auth/AuthContext';
+import {createReportGroups, getAllReportGroupReports} from '../../utils/api';
+import { AuthContext } from '../../auth/AuthContext';
 
 const CreateReportGroup = ({ setReportGroupReports, reportGroupReports, setCurrentView}) => {
 

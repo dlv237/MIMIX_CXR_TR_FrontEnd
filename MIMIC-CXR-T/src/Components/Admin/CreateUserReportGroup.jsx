@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { Form, Button, ListGroup, Table, Col, Row  } from 'react-bootstrap';
-import { AuthContext } from '../auth/AuthContext';
+import { AuthContext } from '../../auth/AuthContext';
 import toast from 'react-hot-toast';
 
 import './CreateUserReportGroup.css';

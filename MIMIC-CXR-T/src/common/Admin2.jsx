@@ -3,7 +3,7 @@ import TableDisplayReports from '../Components/TableDisplayReportGroup';
 import { AuthContext } from '../auth/AuthContext';
 import { getAllReportGroupReports, createUserReportGroups, getBatchProgress } from '../utils/api';
 import NavAdmin from '../Components/NavAdmin';
-import CreateUserReportGroup from '../Components/CreateUserReportGroup';
+import CreateUserReportGroup from '../Components/Admin/CreateUserReportGroup';
 import DisplayUsers from '../Components/TableDisplayUsers';
 import { useNavigate } from 'react-router-dom';
 import Signup from '../profile/Signup';
@@ -88,6 +88,7 @@ function Admin2() {
     { name: "Agregar o eliminar grupos de reportes", eventKey: "first" },
     { name: "Asociar usuario a grupo de reportes", eventKey: "second" },
     { name: "Ver lista de usuarios registrados", eventKey: "third" },
+    { name: "Ver comentarios", eventKey: "fourth" },
     { name: "Registro de usuarios", eventKey: "fifth" },
   ];
 
@@ -132,6 +133,9 @@ function Admin2() {
               )}
               {activeTab === "third" && (
                 <DisplayUsers allUsers={users} onDeleteUser={handleDeleteUser} />
+              )}
+              {activeTab === "fourth" && (
+                <div>Comentarios</div>
               )}
               {activeTab === "fifth" && (
                 <Signup getUsers={getUsers} />

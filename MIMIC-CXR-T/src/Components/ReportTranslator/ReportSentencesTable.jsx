@@ -1,6 +1,8 @@
 import { ToggleButton } from 'react-bootstrap';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faComment } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CommentsModal from './CommentsModal';
+import { useState } from 'react';
 
 function ReportSentencesTable({ 
   report,
@@ -11,8 +13,16 @@ function ReportSentencesTable({
   sentencesSuggestions,
   handleTranslatedSentenceClick,
 }) {
+    const [open, setOpen] = useState(false);
     const originalSentences = report.sentences;
     const translatedSentences = report.translated_sentences;
+    const [selectedTranslatedSentenceId, setSelectedTranslatedSentenceId] = useState(null);
+
+    const handleOpenCommentsModal = (sentence) => {
+      setSelectedTranslatedSentenceId(sentence.id);
+      setOpen(true);
+    };
+
     if (originalSentences == null || translatedSentences == null) {
       return null;
     }
@@ -26,7 +36,8 @@ function ReportSentencesTable({
         return null;
       }
       return (
-        <table key={type} className='w-full min-w-[50rem]'>
+        <>
+          <table key={type} className='w-full min-w-[50rem]'>
           {isSwitchChecked && (
             <tr className="title-row w-full p-0">
               <th className="title-row content-center pl-4">{type}</th>
@@ -85,11 +96,23 @@ function ReportSentencesTable({
                   >
                     <FontAwesomeIcon icon={faTimes} />
                   </ToggleButton>
+                  <ToggleButton
+                    size="sm"
+                    color="green"
+                    onClick={() => handleOpenCommentsModal(translatedSentences[type][index])} // Usa una arrow function
+                    className="custom-toggle-button check"
+                    id={`times-${translatedSentenceId || index}`}
+                  >
+                    <FontAwesomeIcon icon={faComment} />
+                  </ToggleButton>
+
                 </td>
               </tr>
             );
           })}
         </table>
+        { selectedTranslatedSentenceId && <CommentsModal open={open} setOpen={setOpen} sentenceId={selectedTranslatedSentenceId} /> }
+      </>
       );
     });
   }
