@@ -339,3 +339,8 @@ export async function updateComment(commentId, comment, status, token){
   }, config(token));
   return response.data;
 }
+
+export async function getComments(token){
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments`, config(token));
+  return response.data;
+}

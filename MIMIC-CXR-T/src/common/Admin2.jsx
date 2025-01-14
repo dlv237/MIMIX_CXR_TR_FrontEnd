@@ -2,12 +2,13 @@ import { useState, useContext, useEffect } from 'react';
 import TableDisplayReports from '../Components/TableDisplayReportGroup';
 import { AuthContext } from '../auth/AuthContext';
 import { getAllReportGroupReports, createUserReportGroups, getBatchProgress } from '../utils/api';
-import NavAdmin from '../Components/NavAdmin';
+import NavAdmin from '../Components/Admin/NavAdmin';
 import CreateUserReportGroup from '../Components/Admin/CreateUserReportGroup';
 import DisplayUsers from '../Components/TableDisplayUsers';
 import { useNavigate } from 'react-router-dom';
 import Signup from '../profile/Signup';
 import { getAllUsers } from '../utils/api';
+import CommentsTable from '../Components/Admin/CommentsTable';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -135,7 +136,7 @@ function Admin2() {
                 <DisplayUsers allUsers={users} onDeleteUser={handleDeleteUser} />
               )}
               {activeTab === "fourth" && (
-                <div>Comentarios</div>
+                <CommentsTable />
               )}
               {activeTab === "fifth" && (
                 <Signup getUsers={getUsers} />

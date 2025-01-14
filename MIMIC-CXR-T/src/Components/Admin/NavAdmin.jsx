@@ -1,5 +1,5 @@
 import { Nav, Navbar, Button } from 'react-bootstrap';
-import LogoutButton from '../profile/Logout';
+import LogoutButton from '../../profile/Logout';
 import HomeIcon from '@mui/icons-material/Home';
 
 function NavAdmin() {
