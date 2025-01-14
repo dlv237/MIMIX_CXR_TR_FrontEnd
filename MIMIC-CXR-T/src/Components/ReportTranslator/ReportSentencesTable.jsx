@@ -51,7 +51,7 @@ function ReportSentencesTable({
             const suggestionAvailable = suggestionData[translatedSentenceId] !== undefined;
             const isCrossed = suggestionAvailable && (isChecked === false);
             const notReviewed = translatedSentencesState[translatedSentenceId] === null;
-
+            console.log(nonEmptyTranslatedSentences[index])
             return (
               <tr key={index} className='px-3 py-1 h-auto' style={{ backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : ''}}
               >
@@ -98,8 +98,9 @@ function ReportSentencesTable({
                   </ToggleButton>
                   <ToggleButton
                     size="sm"
-                    color="green"
-                    onClick={() => handleOpenCommentsModal(translatedSentences[type][index])} // Usa una arrow function
+                    type='checkbox'
+                    variant={nonEmptyTranslatedSentences[index].hasComments ? 'primary' : 'outline-primary'}
+                    onClick={() => handleOpenCommentsModal(translatedSentences[type][index])}
                     className="custom-toggle-button check"
                     id={`times-${translatedSentenceId || index}`}
                   >
