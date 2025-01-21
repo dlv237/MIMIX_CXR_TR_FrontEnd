@@ -1,8 +1,9 @@
-import { getTranslatedSentenceById } from "../../utils/api";
+import { getTranslatedSentenceById, updateCommentState} from "../../utils/api";
 import { useEffect, useState } from "react";
 import { Dialog } from '@headlessui/react'
 import { useContext } from "react";
 import { AuthContext } from "../../auth/AuthContext";
+import { toast } from "react-hot-toast";
 
 function CommentReviewModal({
   commentData,
@@ -11,6 +12,17 @@ function CommentReviewModal({
 }) {
   const { token } = useContext(AuthContext);
   const [translatedSentence, setTranslatedSentence] = useState(null);
+
+  const handleMarkAsReviewed = async () => {
+    try {
+      await updateCommentState(commentData.id, "Revisado", token);
+      setIsModalOpen(false);
+      toast.success('Comentario marcado como revisado');
+    } catch (error) {
+      console.error('Error marking comment as reviewed:', error);
+      toast.error('Error al marcar el comentario como revisado');
+    }
+  }
 
   console.log(token)
   useEffect(() => {
@@ -79,7 +91,7 @@ function CommentReviewModal({
             </button>
             <button
               type="button"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => { setIsModalOpen(false), handleMarkAsReviewed()}}
               className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             >
               Marcar como revisado
