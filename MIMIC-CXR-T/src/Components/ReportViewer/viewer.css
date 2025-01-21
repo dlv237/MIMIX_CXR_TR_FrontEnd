@@ -1,0 +1,131 @@
+
+  .highlighted-right {
+    background-color: #bfe6e6; 
+  }
+
+  .selected{
+    background-color:#b6e7be;
+  }
+
+  .selected-word-info{
+    background-color:#abdff6;
+  }
+  .selected-word-success{
+    background-color:#cbffcf;
+  }
+  .selected-word-warning{
+    background-color:#fff5cb;
+  }
+  .selected-times{
+    background-color:#e7b6b6;
+  }
+
+  /* En tu archivo CSS o en línea en tu componente */
+.disabled {
+  background-color: lightgray; /* Cambia el color de fondo a tu preferencia */
+  pointer-events: none; /* Desactiva la interacción con el botón */
+}
+
+.mi-toast {
+  max-width: auto; 
+  overflow: scroll;/* Puedes ajustar el valor a tu preferencia */
+}
+
+.translated-phrase {
+  display: flex; /* Hace que los elementos dentro de este div se alineen en una fila */
+  align-items: center; /* Centra verticalmente los elementos */
+  justify-content: space-between; /* Espaciado uniforme entre los elementos */
+  margin-bottom: 10px; /* Agrega espacio entre cada frase traducida */
+}
+
+.custom-toggle-button {
+  font-size: 10px; /* Ajusta el tamaño de la fuente según tus necesidades */
+  padding-top:0px;  
+  padding-bottom:0px; 
+  margin-left: 10px;
+}
+
+tr {
+  display: flex;
+  align-items: stretch;
+}
+
+.text-row{
+  width: 100%;
+  max-width: 5px; /* Puedes ajustar el valor según tus necesidades */
+  overflow-x: auto;
+}
+/* Establece una altura mínima para las celdas con botones */
+.button-row {
+  min-height: 40px; /* Ajusta la altura mínima según tus necesidades */
+}
+
+
+/* Establece un ancho máximo para las celdas de la tabla */
+td, th {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Establece una altura mínima para las filas de la tabla */
+tr {
+  min-height: 40px; /* Ajusta la altura mínima según tus necesidades */
+}
+
+/* Establece una altura mínima para las celdas con botones */
+.button-row {
+  min-height: 40px; /* Ajusta la altura mínima según tus necesidades */
+  display: flex; /* Alinea los botones en una fila */
+  gap: 5px; /* Agrega un pequeño espacio entre los botones */
+  align-items: center; /* Centra verticalmente los botones con respecto al texto */
+  max-width: 10%;
+}
+
+
+/* Agrega márgenes para dar espacio alrededor de la tabla */
+.table-container .table {
+  margin: 10px;
+}
+
+/* Agrega desbordamiento automático para evitar que la tabla se extienda más allá del ancho de la pantalla */
+.table-container {
+  overflow-x: auto;
+}
+
+.centered-cell {
+  text-align: center; /* Centra el texto horizontalmente */
+  vertical-align: middle; /* Centra el texto verticalmente */
+}
+
+.custom-table tr:hover td:hover{
+  transition: background-color 0.3s; /* Agrega una transición suave */
+}
+
+.custom-table th {
+  background-color: #a0c1f3b7; /* Cambia el color de fondo a tu preferencia */
+}
+
+.custom-table tr:nth-child(odd) {
+  background-color: #f2f2f2; /* Color para filas impares */
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #ffffff; /* Color para filas pares */
+}
+
+
+.reports-progress-bar {
+  width: 100%;
+  margin: 0 auto;
+  height: 35px;
+}
+
+.badge-report {
+  margin-top: 2%;
+}
+
+.custom-switch{
+  margin-left: 0%;
+  margin-top: 1%;
+
+}

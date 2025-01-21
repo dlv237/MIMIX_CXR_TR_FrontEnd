@@ -7,6 +7,7 @@ import ReportGroupSelection from '../common/ReportGroupSelection';
 import Admin2 from './Admin2';
 import TableUserDisplayReportGroup from '../Components/TableUserDisplayReportGroup';
 import AccessDenied from '../Components/AccessDenied';
+import ReportViewer from './ReportViewer';
 import { useEffect } from 'react';
 
 function Routing() {
@@ -27,7 +28,7 @@ function Routing() {
         <Route path="/reportselection" element={<ReportGroupSelection />} />
         <Route path="/admin" element={<Admin2 />} />
         <Route path="/access-denied" element={<AccessDenied />} />
-
+        <Route path="/report-viewer/:groupId/report/:reportId" element={<ReportViewer />} />
       </Routes>
     </BrowserRouter>
   );

@@ -10,7 +10,7 @@ import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTransl
   deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../../utils/api';
 import { AuthContext } from '../../auth/AuthContext';
 
-function Viewer({ 
+function Translator({ 
   groupId, 
   report, 
   currentIndex, 
@@ -333,4 +333,4 @@ function Viewer({
   return <ReportTable report={report.report} handleModalSave={handleModalSave} />;
 }
 
-export default Viewer;
+export default Translator;

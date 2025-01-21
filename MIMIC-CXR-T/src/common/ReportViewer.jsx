@@ -1,22 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
 import NavBarReportSelection from '../Components/NavBarReportSelect';
-import Translator from '../Components/ReportTranslator';
 import './translator.css';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { Container, Col, Row } from 'react-bootstrap';
-import {
-  getIsReportCompleted, getReportGroupReportsLength, getReportFromGroupReports
-} from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+import { getReportFromGroupReports } from '../utils/api';
+import Viewer from '../Components/ReportViewer/Viewer';
 
-function ReportTranslator() {
+function ReportViewer() {
   const { token } = useContext(AuthContext);
   const { groupId, reportId } = useParams();
   const [report, setReport] = useState({});
-  const [reportsLength, setReportsLength] = useState(0);
 
-  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchReport = async () => {
@@ -40,30 +35,7 @@ function ReportTranslator() {
     fetchReport();
   }, [reportId, token]);
 
-  useEffect(() => {
-    const fetchReportsLenght = async () => {
-      try {
-        const response = await getReportGroupReportsLength(groupId, token);
-        setReportsLength(response);
-      } catch (error) {
-        console.error('Error fetching report groups:', error);
-      }
-    };
-    
-    fetchReportsLenght();
-  }, [groupId, token]);
-  
 
-  const goToNextReport = async () => {
-    navigate(`/translator/${groupId}/report/${report.report.index+1}`);
-    scrollTo(0, 0);
-  };
-  
-
-  const goToPreviousReport = () => {
-    const previousIndex = (reportsLength + report.report.index - 1) % reportsLength;
-    navigate(`/translator/${groupId}/report/${previousIndex}`);
-  };
 
 
   return (
@@ -73,14 +45,7 @@ function ReportTranslator() {
           <Row>
             <Col >
               {report.report && report.report.sentences?  (
-                <Translator
-                  groupId={groupId}
-                  report={report}
-                  currentIndex={report.report.index}
-                  checkAreReportsCompleted={getIsReportCompleted}
-                  goToNextReport={goToNextReport}
-                  goToPreviousReport={goToPreviousReport}
-                  />
+                <Viewer report={report}/>
               ) : (
                 <p>Loading translated sentences...</p>
               )}
@@ -91,4 +56,4 @@ function ReportTranslator() {
   );
 }
 
-export default ReportTranslator;
+export default ReportViewer;
