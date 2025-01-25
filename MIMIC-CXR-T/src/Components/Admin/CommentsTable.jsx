@@ -23,6 +23,17 @@ function CommentsTable() {
     fetchComments();
   }, [token]);
 
+  const orderedComments = [...comments].sort((a, b) => {
+    if (a.state === "No revisado" && b.state !== "No revisado") {
+      return -1;
+    } else if (a.state !== "No revisado" && b.state === "No revisado") {
+      return 1;
+    } else {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    }
+  });
+
+
   return (
     <>
       <div className="m-16">
@@ -75,7 +86,7 @@ function CommentsTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {comments.map((comment) => (
+            {orderedComments.map((comment) => (
               <tr key={comment.id}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 flex self-center sm:pl-0 w-[10%]">
                   {comment.id}
