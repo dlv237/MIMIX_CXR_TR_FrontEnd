@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
-import TableDisplayReports from '../Components/TableDisplayReportGroup';
+import TableDisplayReports from '../Components/Admin/TableDisplayReportGroup';
 import { AuthContext } from '../auth/AuthContext';
 import { getAllReportGroupReports, createUserReportGroups, getBatchProgress } from '../utils/api';
 import NavAdmin from '../Components/Admin/NavAdmin';
 import CreateUserReportGroup from '../Components/Admin/CreateUserReportGroup';
-import DisplayUsers from '../Components/TableDisplayUsers';
+import DisplayUsers from '../Components/Admin/TableDisplayUsers';
 import { useNavigate } from 'react-router-dom';
 import Signup from '../profile/Signup';
 import { getAllUsers } from '../utils/api';

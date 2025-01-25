@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
-import { updateUser } from '../utils/api';
+import { updateUser } from '../../utils/api';
 import { useContext } from 'react';
-import { AuthContext } from '../auth/AuthContext';
+import { AuthContext } from '../../auth/AuthContext';
 
 const ModalEditUser = ( { show, handleClose, user}) => {
 

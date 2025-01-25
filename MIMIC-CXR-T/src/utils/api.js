@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 function config(token) {
+  console.log(token);
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -197,6 +198,16 @@ export async function getUserReportGroup(reportGroupId, token) {
   return response.data;
 }
 
+export async function getReportGroupProgress(reportGroupId, token) {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}reportgroupreports/batchprogress/${reportGroupId}`, config(token));
+  return response.data;
+}
+
+export async function getUsersByList(userIds, token) {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/list?usersIds=${userIds}`, config(token),
+  );
+  return response.data;
+}
 
 export async function getUserReportGroups(reportGroupId, token) {
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/userreportgroups/reportGroup/${reportGroupId}`, config(token),
@@ -341,7 +352,7 @@ export async function updateComment(commentId, comment, status, token){
 }
 
 export async function updateCommentState(commentId, status, token){
-  const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/comments/state/${commentId}`, {
+  const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}/state`, {
     state: status,
   }, config(token));
   return response.data;

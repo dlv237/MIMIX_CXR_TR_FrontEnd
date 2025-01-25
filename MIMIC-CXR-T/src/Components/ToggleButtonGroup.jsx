@@ -3,7 +3,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
 function ToggleButtonGroup({ acrSelected, onToggleChange }) {
-  const [radioValue, setRadioValue] = useState(acrSelected); // Inicializado con el estado actual
+  const [radioValue, setRadioValue] = useState(acrSelected);
 
   const radios = [
     { name: 'No', value: '1' },
@@ -12,7 +12,7 @@ function ToggleButtonGroup({ acrSelected, onToggleChange }) {
 
   const handleToggleChange = (value) => {
     setRadioValue(value);
-    onToggleChange(value); // Llama a la función de manejo de cambio de toggle de acrónimo
+    onToggleChange(value);
   };
 
   return (

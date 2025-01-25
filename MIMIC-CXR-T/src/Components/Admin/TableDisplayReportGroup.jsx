@@ -1,16 +1,17 @@
 import { useState, useContext, useLayoutEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
-import { deleteReportGroupReport, generateStatsFromBatch, getBatchPdf } from '../utils/api';
-import { AuthContext } from '../auth/AuthContext';
+import { deleteReportGroupReport, generateStatsFromBatch, getBatchPdf } from '../../utils/api';
+import { AuthContext } from '../../auth/AuthContext';
 import ModalReport from './ModalReport';
 import ModalConfirmDelete from './ModalConfirmDelete';
 import { Modal } from 'react-bootstrap';
-import { createReportBatch } from '../utils/api';
+import { createReportBatch } from '../../utils/api';
 import toast from 'react-hot-toast';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import './TableDisplayReportGroup.css';
 import classNames from 'classnames';
-import ReportPreview from './ReportPreview';
+import ReportPreview from '../ReportPreview';
+import ModalReportGroupProgress from './ModalReportGroupProgress';
 
 const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getReportGroupReports, batchsProgress }) => {
   const { token } = useContext(AuthContext);
@@ -26,13 +27,17 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
   const [selectedUsers, setSelectedUsers] = useState([]);
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
-  const [indeterminate, setIndeterminate] = useState(false);
+  const [, setIndeterminate] = useState(false);
   const [generatedFiles, setGeneratedFiles] = useState([]);
   const [showGeneratedFilesModal, setShowGeneratedFilesModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [, setSelectedFile] = useState(null);
   const [showModalViewReport, setShowModalViewReport] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const [selectedBatch, setSelectedBatch] = useState(null);
+  const [openProgressModal, setOpenProgressModal] = useState(false);
 
+
+  console.log(reportGroupReports);
 
   const handleShowModal = (report) => {
     setSelectedReport(report);
@@ -253,6 +258,9 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
                 <a href="#" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => handleShowModal(reportGroupReport)}>
                   Detalles
                 </a>
+                <a href="#" className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={() => {setOpenProgressModal(true), setSelectedBatch(reportGroupReport)}}>
+                  Progreso
+                </a>
                 <a
                   href="#"
                   className={classNames(
@@ -440,7 +448,13 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
         </Modal.Footer>
       </Modal>
 
-
+      {selectedBatch &&
+        <ModalReportGroupProgress 
+          show={openProgressModal} 
+          handleClose={setOpenProgressModal} 
+          batch={selectedBatch}
+        />
+      }
       <ModalReport show={showModal} handleCloseModal={handleCloseModalViewReport} selectedGroup={selectedReport} />
       <ModalConfirmDelete show={showModalDelete} handleClose={handleCloseModalDeleteReport} handleConfirm={handleDeleteReportGroup} msg={"reporte"} />
     </>

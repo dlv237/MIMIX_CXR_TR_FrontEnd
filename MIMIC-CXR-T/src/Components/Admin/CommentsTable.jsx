@@ -80,8 +80,8 @@ function CommentsTable() {
                   {comment.id}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 flex self-center w-[25%]">
-                  {comment.comment.length > 50
-                    ? comment.comment.substring(0, 50) + '...'
+                  {comment.comment.length > 30
+                    ? comment.comment.substring(0, 30) + '...'
                     : comment.comment}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 flex self-center w-[10%]">

@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
-import { deleteUser } from '../utils/api';
-import { AuthContext } from '../auth/AuthContext';
+import { deleteUser } from '../../utils/api';
+import { AuthContext } from '../../auth/AuthContext';
 import ModalConfirmDelete from './ModalConfirmDelete';
 import ModalEditUser from './ModalEditUser';
 import toast from 'react-hot-toast';
