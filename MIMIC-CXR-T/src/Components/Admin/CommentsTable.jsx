@@ -10,15 +10,16 @@ function CommentsTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedComment, setSelectedComment] = useState(null);
 
+  const fetchComments = async () => {
+    try {
+      const commentsData = await getComments(token);
+      setComments(commentsData);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const commentsData = await getComments(token);
-        setComments(commentsData);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    };
     fetchComments();
   }, [token]);
 
@@ -132,6 +133,7 @@ function CommentsTable() {
           commentData={selectedComment}
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
+          onCommentReviewed={fetchComments}
         />
       </div>
     </>

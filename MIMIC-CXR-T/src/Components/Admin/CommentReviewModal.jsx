@@ -9,6 +9,7 @@ function CommentReviewModal({
   commentData,
   isModalOpen,
   setIsModalOpen,
+  onCommentReviewed,
 }) {
   const { token } = useContext(AuthContext);
   const [translatedSentence, setTranslatedSentence] = useState(null);
@@ -18,6 +19,7 @@ function CommentReviewModal({
       await updateCommentState(commentData.id, "Revisado", token);
       setIsModalOpen(false);
       toast.success('Comentario marcado como revisado');
+      onCommentReviewed();
     } catch (error) {
       console.error('Error marking comment as reviewed:', error);
       toast.error('Error al marcar el comentario como revisado');

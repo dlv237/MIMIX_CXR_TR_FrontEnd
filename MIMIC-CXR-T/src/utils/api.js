@@ -352,7 +352,7 @@ export async function updateComment(commentId, comment, status, token){
 }
 
 export async function updateCommentState(commentId, status, token){
-  const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}/state`, {
+  const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/state/${commentId}`, {
     state: status,
   }, config(token));
   return response.data;
