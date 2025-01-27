@@ -102,7 +102,6 @@ function ModalSuggestions({
             selectedOptionsByType[type] = [option];
           }
   
-          // Agregar la palabra seleccionada al array
           selectedWords.push({
             word: correction.wordSelected,
             index: correction.wordIndex,
@@ -232,16 +231,16 @@ function ModalSuggestions({
       .flatMap((key) => selectedOptionsByType[key])
       .filter(Boolean);
     setSelectedOptions(selectedOptions);
+    console.log(token);
   }, [selectedOptionsByType]);
 
   useEffect(() => {
     if (show && !isReopen){
       loadSentenceAndTranslation(selectedTranslatedSentenceId);
-      loadPreviousSuggestionData(selectedTranslatedSentenceId);
       loadPreviousCorrectionData(selectedTranslatedSentenceId);
       setIsReopen(true);
     }
-  }, [show, selectedTranslatedSentenceId]);
+  }, [show, selectedTranslatedSentenceId, isReopen]);
   
   return (
     <>

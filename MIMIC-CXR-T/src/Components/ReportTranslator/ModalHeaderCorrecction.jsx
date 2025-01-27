@@ -1,5 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
-import { Button, Modal, Form, Row, Card, Col, Alert, Badge, Accordion } from 'react-bootstrap';
+import {Form, Row, Card, Col} from 'react-bootstrap';
 
 function ModalHeaderCorrecction({ originalSentence, translatedSentence }) {
   return (

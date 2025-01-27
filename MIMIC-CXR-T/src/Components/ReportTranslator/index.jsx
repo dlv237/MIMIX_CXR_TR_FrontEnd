@@ -100,6 +100,10 @@ function Translator({
         console.error('Error fetching report groups:', error);
       }
     };
+    fetchReportsLenght();
+  }, [groupId, token]);
+
+  useEffect(() => {
 
     const fetchLastTranslatedReportId = async () => {
       try {
@@ -113,8 +117,7 @@ function Translator({
     };
 
     fetchLastTranslatedReportId();
-    fetchReportsLenght();
-  }, [translatedSentencesState, token, lastTranslatedReportId, report, groupId, calculateProgressByReports]);
+  }, [translatedSentencesState, token, lastTranslatedReportId, report, groupId]);
 
   useEffect(() => {
     if (report) {

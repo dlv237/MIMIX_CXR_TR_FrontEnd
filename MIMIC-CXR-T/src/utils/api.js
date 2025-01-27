@@ -178,7 +178,7 @@ export async function deleteSuggestion(translatedsentenceId, token) {
 }
 
 export async function getTranslatedSentenceById(translatedsentenceId, token) {
-  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/translatedsentences/${translatedsentenceId}`,  config(token),
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/translatedsentences/withreportdata/${translatedsentenceId}`,  config(token),
   );
   return response.data;
 }

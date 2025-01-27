@@ -43,6 +43,7 @@ function ReportTranslator() {
   useEffect(() => {
     const fetchReportsLenght = async () => {
       try {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         const response = await getReportGroupReportsLength(groupId, token);
         setReportsLength(response);
       } catch (error) {
