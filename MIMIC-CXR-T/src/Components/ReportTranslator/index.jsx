@@ -5,7 +5,7 @@ import ModalSuggestions from './SentenceCorrectionModal';
 import ReportSentencesTable from '../ReportTranslator/ReportSentencesTable';
 import { toast } from 'react-hot-toast';
 
-import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
+import { getUserReportGroup, createUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
   deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getUserTranslatedSentencesByReportId } from '../../utils/api';
 import { AuthContext } from '../../auth/AuthContext';
