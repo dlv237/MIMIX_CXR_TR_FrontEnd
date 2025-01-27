@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 
 import { getUserReportGroup, createUserTranslatedSentence, getPreviousUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
-  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength } from '../../utils/api';
+  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getUserTranslatedSentencesByReportId } from '../../utils/api';
 import { AuthContext } from '../../auth/AuthContext';
 
 function Translator({ 
@@ -31,16 +31,12 @@ function Translator({
   const [sentencesAcronyms, setSentencesAcronyms] = useState({});
 
   const handleModalSave = async (editedTranslatedSentence) => {
-    console.log(Object.keys(translatedSentencesState).length);
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
     setSentencesSuggestions(prev => ({ ...prev, [selectedTranslatedSentenceId]: editedTranslatedSentence }));
     setTranslatedSentencesState(prev => ({ ...prev, [selectedTranslatedSentenceId]: false }));
 
-    if (selectedTranslatedSentenceId in translatedSentencesState) {
-      await updateUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
-    } else {
-      await createUserTranslatedSentence(selectedTranslatedSentenceId, false, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
-    }
+    await updateUserTranslatedSentence(selectedTranslatedSentenceId, true, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
+    await createUserTranslatedSentence(selectedTranslatedSentenceId, true, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
   };
 
   const handleCloseWithoutSave = async () => {
@@ -79,7 +75,6 @@ function Translator({
                                   report.report.sentences.findings.length + 
                                   report.report.sentences.impression.length;
     const translatedSentencesLength = translatedSentencesState ? Object.keys(translatedSentencesState).length : 0;
-    console.log(reportSentencesLength, translatedSentencesLength);
     const newProgressByReports = calculateProgressByReports();
     if (currentIndex === lastTranslatedReportId && reportSentencesLength === translatedSentencesLength) {
       await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
@@ -124,86 +119,87 @@ function Translator({
   useEffect(() => {
     if (report) {
       setTranslatedSentencesState({});
+      loadAllUserTranslatedPhrases();
+    }
+  }, [report]);
 
-      const updatedState = {};
+  const loadAllUserTranslatedPhrases = async () => {
+    try {
+      const response = await getUserTranslatedSentencesByReportId(report.report.reportId, token);
+      const userTranslatedMap = {};
+      response.forEach((uts) => {
+        userTranslatedMap[uts.translatedsentenceId] = uts;
+      });
+
+      const updatedStateTemp = {};
+      const updatedAcronymsTemp = {};
+      const updatedSuggestionTemp = {};
+
       Object.keys(report.report.translated_sentences).forEach((type) => {
-        report.report.translated_sentences[type].forEach((translatedsentence) => {
-          loadUserTranslatedPhrase(translatedsentence);
-          loadUserSuggestion(translatedsentence);
+        report.report.translated_sentences[type].forEach((ts) => {
+          const uts = userTranslatedMap[ts.id];
+          if (!uts) {
+            updatedStateTemp[ts.id] = null;
+          } else {
+            if (uts.isSelectedCheck && uts.state) {
+              updatedStateTemp[ts.id] = true;
+              if (uts.hasAcronym) {
+                updatedAcronymsTemp[ts.id] = uts.hasAcronym;
+              }
+            } else if (uts.isSelectedTimes && !uts.state) {
+              updatedStateTemp[ts.id] = false;
+              if (uts.hasAcronym) {
+                updatedAcronymsTemp[ts.id] = uts.hasAcronym;
+              }
+            }
+            if (uts.isSelectedTimes) {
+              loadUserSuggestion(ts, updatedSuggestionTemp);
+            }
+          }
         });
       });
-      
-      setTranslatedSentencesState((prev) => ({ ...prev, ...updatedState }));
-    }
-  }, [report, token]);
 
-  const loadUserTranslatedPhrase = async (translatedsentence) => {
-    try {
-      const response = await getPreviousUserTranslatedSentence(translatedsentence.id, token);
-  
-      if (response) {
-        if (response.isSelectedCheck && response.state) {
-          setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: true }));
-          if (response.hasAcronym !== undefined) {
-            setSentencesAcronyms((prev) => ({
-              ...prev,
-              [translatedsentence.id]: response.hasAcronym,
-            }));
-          }
-        }
-        if (response.isSelectedTimes && !response.state) {
-          setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: false }));
-          setSentencesAcronyms((prev) => ({
-            ...prev,
-            [translatedsentence.id]: response.hasAcronym,
-          }));
-        }
-  
-      } else {
-        setTranslatedSentencesState((prev) => ({ ...prev, [translatedsentence.id]: null }));
-      }
+      setTranslatedSentencesState(updatedStateTemp);
+      setSentencesAcronyms(updatedAcronymsTemp);
+      setSuggestionData(updatedSuggestionTemp);
     } catch (error) {
-      console.error(`Error al cargar la traducción del usuario de la frase id: ${translatedsentence.id}:`, error);
+      console.error("Error al cargar todas las UserTranslatedSentence:", error);
     }
   };
 
-  const loadUserSuggestion = async (translatedsentence) => {
+  const loadUserSuggestion = async (translatedsentence, updatedSuggestionTemp) => {
     try {
       const response = await getPreviousUserSuggestion(translatedsentence.id, token);
       if (response) {
-        await updateUserTranslatedSentence(translatedsentence.id, true, false, true, sentencesAcronyms[selectedTranslatedSentenceId], token);
         setTranslatedSentencesState(prev => ({ ...prev, [translatedsentence.id]: false }));
 
-        if (response.changesFinalTranslation !== null && response.changesFinalTranslation !== '') {
-          setSuggestionData(prev => ({ ...prev, [translatedsentence.id]: response.changesFinalTranslation }));
+        if (response.changesFinalTranslation) {
+          updatedSuggestionTemp[translatedsentence.id] = response.changesFinalTranslation;
         } else {
-          setSuggestionData(prev => ({ ...prev, [translatedsentence.id]: 'no encontrada sugerencia' }));
+          updatedSuggestionTemp[translatedsentence.id] = 'no encontrada sugerencia';
         }
       }
     } catch (error) {
-      console.error(`no encontrada sugerencia de tphrase id: ${translatedsentence.id}:`, error);
+      console.error(`No encontrada sugerencia de phrase id: ${translatedsentence.id}:`, error);
     }
   };
 
   const handleTranslatedSentenceClick = async (translatedSentences, check) => {
     
     if (check) {
-      if (translatedSentences.id in translatedSentencesState) {
-        await updateUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
-        setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
-      } else {
-        await createUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
-        setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
-      }
+      setTranslatedSentencesState(prev => ({ ...prev, [translatedSentences.id]: true }));
+      await updateUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
+      await createUserTranslatedSentence(translatedSentences.id, true, true, false, sentencesAcronyms[selectedTranslatedSentenceId], token);
 
+      if (translatedSentences.id in isCrossedSentences) {
+        setIsCrossedSentences(prev => ({ ...prev, [translatedSentences.id]: false }));
+      } 
       await deleteUserCorrectionsTranslatedSentence(translatedSentences.id, token);
       await deleteSuggestion(translatedSentences.id, token);
     } else {
       setSelectedTranslatedSentenceId(translatedSentences.id);
       setIsModalOpen(true);
     }
-    console.log(translatedSentencesState);
-    console.log(translatedSentences.id);
   };
 
 

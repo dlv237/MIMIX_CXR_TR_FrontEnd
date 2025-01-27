@@ -51,7 +51,6 @@ function ReportSentencesTable({
             const suggestionAvailable = suggestionData[translatedSentenceId] !== undefined;
             const isCrossed = suggestionAvailable && (isChecked === false);
             const notReviewed = translatedSentencesState[translatedSentenceId] === null;
-            console.log(nonEmptyTranslatedSentences[index])
             return (
               <tr key={index} className='px-3 py-1 h-auto' style={{ backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : ''}}
               >

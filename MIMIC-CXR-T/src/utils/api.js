@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 function config(token) {
-  console.log(token);
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -85,6 +84,12 @@ export async function getPreviousUserTranslatedSentence(translatedsentenceId, to
 
 export async function getUserTranslatedSentencesByReportGroup(groupId, token) {
   const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/usertranslatedsentences/countTotal/${groupId}`,  config(token),
+  );
+  return response.data;
+}
+
+export async function getUserTranslatedSentencesByReportId(reportId, token) {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/usertranslatedsentences/report/${reportId}`,  config(token),
   );
   return response.data;
 }

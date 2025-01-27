@@ -9,18 +9,13 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
 
   const [usersList, setUsersList] = useState([]);
   const [reportProgress, setReportProgress] = useState({});
-  console.log(batch);
-  const lastReportId = batch.reports[batch.reports.length - 1].id;
-  console.log(lastReportId);
   
   useEffect(() => {
     const fetchUsersReportGroupProgress = async () => {
       try {
         let response = await getReportGroupProgress(batchId, token);
-        console.log(response);
         for (let i = 0; i < users.length; i++) {
           const nReports = batch.reports.length;
-          console.log(response[i].lastTranslatedReportId);
           setReportProgress((prev) => ({
             ...prev,
             [users[i]]: (response[i].lastTranslatedReportId / nReports) * 100,
@@ -33,7 +28,6 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
     const fetchUsers = async () => {
       try {
         const response = await getUsersByList(users.join(','), token);
-        console.log(users.join(','));
         setUsersList(response);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -44,7 +38,6 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
   }, [batch.reports.length, batchId, token, users]);
 
 
-  console.log(reportProgress);
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>

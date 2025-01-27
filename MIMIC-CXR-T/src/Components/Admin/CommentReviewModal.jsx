@@ -26,15 +26,12 @@ function CommentReviewModal({
     }
   }
 
-  console.log(token)
   useEffect(() => {
     if (!commentData) return;
     const fetchTranslatedSentence = async () => {
       try {
-        console.log(commentData.translatedSentenceId);
         const sentence = await getTranslatedSentenceById(commentData.translatedSentenceId, token);
         setTranslatedSentence(sentence);
-        console.log('Translated sentence:', sentence);
       } catch (error) {
         console.error('Error fetching translated sentence:', error);
       }

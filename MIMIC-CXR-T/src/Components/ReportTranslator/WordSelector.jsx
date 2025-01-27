@@ -47,7 +47,6 @@ function WordSelector({ sentence, variant, initialSelectedWords, onOptionClick }
       if (type === mapVariantToType(variant)) {
         const wordElements = sentenceRef.current.childNodes;
         const wordElement = wordElements[index];
-        console.log(words[index], type);
         if (wordElement) {
           const mark = document.createElement('mark');
           mark.style.backgroundColor = highlightColor;

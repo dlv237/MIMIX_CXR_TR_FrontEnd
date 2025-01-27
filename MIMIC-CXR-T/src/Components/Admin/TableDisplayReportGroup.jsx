@@ -37,8 +37,6 @@ const TableDisplayReports = ({ reportGroupReports, onDeleteReportGroup, getRepor
   const [openProgressModal, setOpenProgressModal] = useState(false);
 
 
-  console.log(reportGroupReports);
-
   const handleShowModal = (report) => {
     setSelectedReport(report);
     setShowModal(true);

@@ -31,7 +31,6 @@ function ReportsTable({
             </tr>
           )}
           {nonEmptyOriginalSentences.map((sentence, index) => {
-            console.log(sentenceId, sentence.id);
             return (
               <tr key={index} className='px-3 py-1 h-auto' style={{ backgroundColor: parseInt(sentenceId) === sentence.id ? 'rgba(255, 179, 37, 0.59)' : ''}}
               >

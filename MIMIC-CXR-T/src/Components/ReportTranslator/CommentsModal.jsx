@@ -16,7 +16,6 @@ function CommentsModal({open, setOpen, sentenceId}) {
     const fetchComments = async () => {
       try {
         const response = await getCommentByTranslatedSentenceId(sentenceId, token)
-        console.log(response)
         setComment(response.comment)
         setCommentStatus(response.state)
         setCommentId(response.id)
@@ -52,8 +51,6 @@ function CommentsModal({open, setOpen, sentenceId}) {
     }
     
   }
-
-  console.log(sentenceId)
 
   return (
     <Dialog open={open} onClose={setOpen} style={{zIndex: 9998}} className="relative">
