@@ -356,6 +356,11 @@ export async function updateComment(commentId, comment, status, token){
   return response.data;
 }
 
+export async function getReportImagesPaths(reportId, token) {
+  const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reports/${reportId}/images`, config(token));
+  return response.data;
+}
+
 export async function updateCommentState(commentId, status, token){
   const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/state/${commentId}`, {
     state: status,

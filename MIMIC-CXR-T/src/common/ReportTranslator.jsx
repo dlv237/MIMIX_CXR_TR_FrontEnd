@@ -17,18 +17,20 @@ function ReportTranslator() {
   const [reportsLength, setReportsLength] = useState(0);
 
   const navigate = useNavigate();
+
   
   useEffect(() => {
     const fetchReport = async () => {
       try {
         const reportResponse = await getReportFromGroupReports(groupId, reportId, token);
+        console.log(reportResponse);
         const data = reportResponse;
         const sortById = (a, b) => a.id - b.id;
         
         data.report.sentences.background.sort(sortById);
         data.report.sentences.findings.sort(sortById);
         data.report.sentences.impression.sort(sortById);
-
+        
         data.report.translated_sentences.background.sort(sortById);
         data.report.translated_sentences.findings.sort(sortById);
         data.report.translated_sentences.impression.sort(sortById);
@@ -39,11 +41,12 @@ function ReportTranslator() {
     };
     fetchReport();
   }, [reportId, token]);
+  
+  console.log(report);
 
   useEffect(() => {
     const fetchReportsLenght = async () => {
       try {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         const response = await getReportGroupReportsLength(groupId, token);
         setReportsLength(response);
       } catch (error) {

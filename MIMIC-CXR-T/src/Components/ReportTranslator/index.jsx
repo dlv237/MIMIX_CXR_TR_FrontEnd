@@ -4,10 +4,12 @@ import './viewer.css';
 import ModalSuggestions from './SentenceCorrectionModal';
 import ReportSentencesTable from '../ReportTranslator/ReportSentencesTable';
 import { toast } from 'react-hot-toast';
-
+import { Modal } from 'react-bootstrap';
 import { getUserReportGroup, createUserTranslatedSentence, 
   updateUserTranslatedSentence, updateReportProgress, deleteUserCorrectionsTranslatedSentence, 
-  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getUserTranslatedSentencesByReportId } from '../../utils/api';
+  deleteSuggestion, getPreviousUserSuggestion, getReportGroupReportsLength, getUserTranslatedSentencesByReportId,
+  getReportImagesPaths
+} from '../../utils/api';
 import { AuthContext } from '../../auth/AuthContext';
 
 function Translator({ 
@@ -29,6 +31,9 @@ function Translator({
   const [sentencesSuggestions, setSentencesSuggestions] = useState({});
   const [lastTranslatedReportId, setLastTranslatedReportId] = useState(0);
   const [sentencesAcronyms, setSentencesAcronyms] = useState({});
+  const [reportImagesPaths, setReportImagesPaths] = useState([]);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleModalSave = async (editedTranslatedSentence) => {
     setIsCrossedSentences(prev => ({ ...prev, [selectedTranslatedSentenceId]: true }));
@@ -60,9 +65,16 @@ function Translator({
     }
   };
 
+  useEffect(() => {
+    setProgressReports(calculateProgressByReports());
+  }, [lastTranslatedReportId, reportsLenght, report]);
+
   const calculateProgressByReports = () => {
+    console.log('reportsLenght', reportsLenght);
+    console.log('lastTranslatedReportId', lastTranslatedReportId);
+
     return (reportsLenght && lastTranslatedReportId) ? (lastTranslatedReportId / reportsLenght) * 100 : 0;
-  };
+  }; 
 
   const renderTooltipProgressBarReports = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -123,8 +135,19 @@ function Translator({
     if (report) {
       setTranslatedSentencesState({});
       loadAllUserTranslatedPhrases();
+      loadReportImagesPaths();
     }
   }, [report]);
+
+  const loadReportImagesPaths = async () => {
+    try {
+      const response = await getReportImagesPaths(report.report.reportId, token);
+      setReportImagesPaths(response);
+      console.log('Report images paths:', reportImagesPaths);
+    } catch (error) {
+      console.error('Error al cargar las imágenes del reporte:', error);
+    }
+  };
 
   const loadAllUserTranslatedPhrases = async () => {
     try {
@@ -274,7 +297,7 @@ function Translator({
         </Col>
         </Row>
         <Row>
-        <Col xs={4}>
+        <Col xs={4} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: '1rem' }}>
           <Form>
           <Form.Check
             type="switch"
@@ -285,6 +308,9 @@ function Translator({
             className="custom-switch"
           />
           </Form>
+          <Button variant="primary" onClick={() => setIsImageModalOpen(true)} style={{ borderRadius: '10px', borderColor: '#6c757d', backgroundColor: '#6c757d' }}>
+            Mostrar imagenes
+          </Button>
         </Col>
         </Row>
         <Row className='min-w-fit justify-self-center'>
@@ -325,6 +351,37 @@ function Translator({
         sentencesAcronyms={sentencesAcronyms}
         setSentencesAcronyms={setSentencesAcronyms}
       />
+      {reportImagesPaths.length > 0 && (
+        <Modal show={isImageModalOpen} onHide={() => setIsImageModalOpen(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Imagenes del Reporte</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <img 
+              src={`data:image/jpeg;base64,${reportImagesPaths[currentImageIndex]}`}
+              alt="Reporte" 
+              style={{ width: '100%' }} 
+            />
+            <div className='flex justify-between mt-4 items-center'>
+              <Button 
+                variant="primary" 
+                onClick={() => setCurrentImageIndex((currentImageIndex - 1) % reportImagesPaths.length)}
+                disabled={currentImageIndex === 0}
+              >
+                Anterior
+              </Button>
+              <span>{currentImageIndex + 1} de {reportImagesPaths.length}</span>
+              <Button 
+                variant="primary" 
+                onClick={() => setCurrentImageIndex((currentImageIndex + 1) % reportImagesPaths.length)}
+                disabled={currentImageIndex === reportImagesPaths.length - 1}
+              >
+                Siguiente
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
       </>
     );
   }

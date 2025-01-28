@@ -231,7 +231,6 @@ function ModalSuggestions({
       .flatMap((key) => selectedOptionsByType[key])
       .filter(Boolean);
     setSelectedOptions(selectedOptions);
-    console.log(token);
   }, [selectedOptionsByType]);
 
   useEffect(() => {
