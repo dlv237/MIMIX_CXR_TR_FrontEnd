@@ -146,6 +146,7 @@ function Translator({
       console.log('Report images paths:', reportImagesPaths);
     } catch (error) {
       console.error('Error al cargar las imágenes del reporte:', error);
+      setReportImagesPaths([]);
     }
   };
 
@@ -308,9 +309,9 @@ function Translator({
             className="custom-switch"
           />
           </Form>
-          <Button variant="primary" onClick={() => setIsImageModalOpen(true)} style={{ borderRadius: '10px', borderColor: '#6c757d', backgroundColor: '#6c757d' }}>
+          {reportImagesPaths.length > 0 && <Button variant="primary" onClick={() => setIsImageModalOpen(true)} style={{ borderRadius: '10px', borderColor: '#6c757d', backgroundColor: '#6c757d' }}>
             Mostrar imagenes
-          </Button>
+          </Button>}
         </Col>
         </Row>
         <Row className='min-w-fit justify-self-center'>
