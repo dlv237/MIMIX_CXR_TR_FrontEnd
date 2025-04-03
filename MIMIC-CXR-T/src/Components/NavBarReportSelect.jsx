@@ -31,14 +31,14 @@ const NavBarReportSelection = () => {
       <Navbar.Brand>MIMIC-CXR</Navbar.Brand>
       <Nav className="ml-auto justify-between w-full">
         <div className='flex'>
-          <Nav.Link href="/mimix-cxr-tr/reportselection">
+          <Nav.Link href="/reportselection">
             <button className=' text-white bg-blue-800 text-center flex rounded-lg'>
               <HomeIcon className='mr-2'/>
               Home
             </button>
           </Nav.Link>
           {user && user.role === 'Admin' && (
-            <Nav.Link href="/mimix-cxr-tr/admin">
+            <Nav.Link href="/admin">
               <button className=' text-white bg-green-800 text-center flex'>
                 <AdminPanelSettingsIcon className='mr-2'/>
                 Admin

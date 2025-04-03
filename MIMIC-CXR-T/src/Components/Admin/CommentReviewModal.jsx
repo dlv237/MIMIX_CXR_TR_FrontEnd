@@ -83,7 +83,7 @@ function CommentReviewModal({
           <div className="flex justify-between mt-4">
             <button
               type="button"
-              onClick={() => window.open(`/mimix-cxr-tr/report-viewer/${translatedSentence.reportGroupId}/report/${translatedSentence.indexReport - 1}?sentenceId=${translatedSentence.sentence.id}`, '_blank')}
+              onClick={() => window.open(`/report-viewer/${translatedSentence.reportGroupId}/report/${translatedSentence.indexReport - 1}?sentenceId=${translatedSentence.sentence.id}`, '_blank')}
               className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             >
               Ver reporte

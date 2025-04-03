@@ -9,7 +9,7 @@ function NavAdmin() {
     >
       <Navbar.Brand>MIMIC-CXR</Navbar.Brand>
       <Nav className="ml-auto justify-between w-full" style={{position: 'relative'}}> 
-        <Nav.Link href="/mimix-cxr-tr/reportselection">
+        <Nav.Link href="/reportselection">
           <button variant="success" className=' text-white bg-blue-800 text-center flex'>
             <HomeIcon className='mr-2'/>
             Home

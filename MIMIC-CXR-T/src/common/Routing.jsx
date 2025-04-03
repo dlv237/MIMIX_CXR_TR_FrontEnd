@@ -18,7 +18,7 @@ function Routing() {
   }, []);
 
   return (
-    <BrowserRouter basename="/mimix-cxr-tr/">
+    <BrowserRouter >
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/tablereportgroup/:groupId" element={<TableUserDisplayReportGroup />} />
