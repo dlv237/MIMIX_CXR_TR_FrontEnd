@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { Modal, Table } from "react-bootstrap";
-import { getReportGroupProgress, getUsersByList } from "../../utils/api";
+import { getReportGroupProgress, getUsersByList, getUserSuggestionsByGroupId } from "../../utils/api";
 import { AuthContext } from "../../auth/AuthContext";
 
 function ModalReportGroupProgress({ show, handleClose, batch }) {
@@ -9,6 +9,23 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
 
   const [usersList, setUsersList] = useState([]);
   const [reportProgress, setReportProgress] = useState({});
+
+  const donwloadReport = async (userId) => {
+    const user = usersList.find((user) => user.id === userId);
+    if (user) {
+      const response = await getUserSuggestionsByGroupId(batchId, user.id, token);
+      console.log(response);
+      const blob = new Blob([JSON.stringify(response)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `results_group_${batchId}_user_${user.email}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  }
   
   useEffect(() => {
     const fetchUsersReportGroupProgress = async () => {
@@ -39,27 +56,45 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
 
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Progreso de los usuarios</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Table striped hover>
+        <Table striped hover >
           <thead>
             <tr>
-              <th className='w-[50%] text-center'>Usuario</th>
-              <th className='w-[50%] text-center'>Progreso</th>
+              <th className='w-[40%] text-center'>Usuario</th>
+              <th className='w-[30%] text-center'>Progreso</th>
+              <th className='w-[30%] text-center'>Resultados</th>
             </tr>
           </thead>
           <tbody className="w-full">
             {Array.isArray(usersList) && usersList.map((user) => (
               <tr key={user.id}>
-                <td className="w-full">{user.email}</td>
-                <td className="w-full text-center">
+                <td className="w-[40%] ">{user.email}</td>
+                <td className="w-[30%] text-center">
                   {Math.round(reportProgress[user.id])}%
                   <div className="overflow-hidden rounded-full bg-gray-400">
-                    <div style={{ width: `${Math.round(reportProgress[user.id])}%` }} className="h-3 rounded-full bg-indigo-600" />
+                    <div
+                      style={{ width: `${Math.round(reportProgress[user.id])}%` }}
+                      className="h-3 rounded-full bg-indigo-600"
+                    />
                   </div>
+                </td>
+                <td className="w-[30%] text-center">
+                  <button
+                    onClick={() => donwloadReport(user.id)}
+                    disabled={reportProgress[user.id] !== 100}
+                    type="button"
+                    className={`mt-2 rounded bg-white/10 px-2 py-1 text-xs font-semibold  shadow-sm${
+                      reportProgress[user.id] !== 100
+                        ? 'bg-gray-400 cursor-not-allowed text-gray-200 text-gray'
+                        : 'bg-indigo-600 hover:bg-indigo-100 text-black'
+                    }`}
+                  >
+                    Descargar
+                  </button>
                 </td>
               </tr>
             ))}

@@ -50,6 +50,13 @@ export async function getReportGroupReports(groupId, token) {
   return response.data;
 }
 
+export async function getUserSuggestionsByGroupId(groupId, userId, token) {
+  const response = await axios.get(
+  `${import.meta.env.VITE_BACKEND_URL}/suggestions/result/${groupId}?userId=${userId}`, config(token),
+  );
+  return response.data;
+}
+
 export async function getReportFromGroupReports(groupId, reportId, token) {
   const response = await axios.get(
   `${import.meta.env.VITE_BACKEND_URL}/userreportgroups/report/${groupId}/${reportId}`, config(token),

@@ -70,9 +70,6 @@ function Translator({
   }, [lastTranslatedReportId, reportsLenght, report]);
 
   const calculateProgressByReports = () => {
-    console.log('reportsLenght', reportsLenght);
-    console.log('lastTranslatedReportId', lastTranslatedReportId);
-
     return (reportsLenght && lastTranslatedReportId) ? (lastTranslatedReportId / reportsLenght) * 100 : 0;
   }; 
 
@@ -88,6 +85,7 @@ function Translator({
                                   report.report.sentences.impression.length;
     const translatedSentencesLength = translatedSentencesState ? Object.keys(translatedSentencesState).length : 0;
     const newProgressByReports = calculateProgressByReports();
+    console.log(translatedSentencesLength, reportSentencesLength);
     if (currentIndex === lastTranslatedReportId && reportSentencesLength === translatedSentencesLength) {
       await updateReportProgress(newProgressByReports, groupId, currentIndex + 1, token);
     }
