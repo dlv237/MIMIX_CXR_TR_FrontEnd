@@ -15,7 +15,7 @@ function ModalReportGroupProgress({ show, handleClose, batch }) {
     if (user) {
       const response = await getUserSuggestionsByGroupId(batchId, user.id, token);
       console.log(response);
-      const blob = new Blob([JSON.stringify(response)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
